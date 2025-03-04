@@ -3,12 +3,12 @@ using UnityEngine.UIElements;
 
 public class Player : Character
 {
-    GameObject gun;
+    public GameObject gun;
     void Start()
     {
         movespeed = 10;
         hp = 3;
-        gun = transform.GetChild(0).GetComponent<GameObject>();
+        gun = transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -40,7 +40,7 @@ public class Player : Character
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
         // น฿ป็
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetMouseButtonDown(0))
         {
             gun.GetComponent<Gun>().fire();
         }
