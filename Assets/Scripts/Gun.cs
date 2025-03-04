@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public GameObject bullet;
     void Start()
+    {
+        bullet = Resources.Load<GameObject>("Prefabs/Bullet");
+    }
+
+    void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void fire() 
     {
-        
+        Instantiate(bullet, transform.position + transform.right * 0.7f, transform.rotation);
     }
 }
