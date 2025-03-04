@@ -4,7 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
+  - Wall
+  - Enemy
+  - Emergency Kit
   - Patient
+  - Bullet
   layers:
   - Default
   - TransparentFX
