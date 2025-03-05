@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class ArrowIndicator : MonoBehaviour
 {
-    public Transform player; // ÇÃ·¹ÀÌ¾î ÂüÁ¶
-    public GameObject arrowPrefab; // È­»ìÇ¥ ÇÁ¸®ÆÕ
-    private List<GameObject> arrows = new List<GameObject>(); // »ı¼ºµÈ È­»ìÇ¥ ¸®½ºÆ®
+    public Transform player; // í”Œë ˆì´ì–´ ì°¸ì¡°
+    public GameObject arrowPrefab; // í™”ì‚´í‘œ í”„ë¦¬íŒ¹
+    private List<GameObject> arrows = new List<GameObject>(); // ìƒì„±ëœ í™”ì‚´í‘œ ë¦¬ìŠ¤íŠ¸
     private Camera cam;
 
     void Start()
@@ -20,21 +20,21 @@ public class ArrowIndicator : MonoBehaviour
 
     void UpdateArrowIndicators()
     {
-        // ±âÁ¸ È­»ìÇ¥ »èÁ¦
+        // ê¸°ì¡´ í™”ì‚´í‘œ ì‚­ì œ
         foreach (var arrow in arrows)
         {
             Destroy(arrow);
         }
         arrows.Clear();
 
-        // È¯ÀÚ Ã£±â
+        // í™˜ì ì°¾ê¸°
         GameObject[] patients = GameObject.FindGameObjectsWithTag("Patient");
 
         foreach (GameObject patient in patients)
         {
             Vector3 screenPos = cam.WorldToViewportPoint(patient.transform.position);
 
-            // È­¸é ¹Û¿¡ ÀÖ´Â È¯ÀÚ¸¸ È­»ìÇ¥ Ç¥½Ã
+            // í™”ë©´ ë°–ì— ìˆëŠ” í™˜ìë§Œ í™”ì‚´í‘œ í‘œì‹œ
             if (screenPos.x < 0 || screenPos.x > 1 || screenPos.y < 0 || screenPos.y > 1)
             {
                 CreateArrow(patient.transform);
@@ -44,24 +44,24 @@ public class ArrowIndicator : MonoBehaviour
 
     void CreateArrow(Transform target)
     {
-        // È­»ìÇ¥ »ı¼º
+        // í™”ì‚´í‘œ ìƒì„±
         GameObject arrow = Instantiate(arrowPrefab, transform);
         arrows.Add(arrow);
 
-        // ÇÃ·¹ÀÌ¾î¿Í ¸ñÇ¥¹° »çÀÌÀÇ ¹æÇâ °è»ê
+        // í”Œë ˆì´ì–´ì™€ ëª©í‘œë¬¼ ì‚¬ì´ì˜ ë°©í–¥ ê³„ì‚°
         Vector3 direction = (target.position - player.position).normalized;
 
-        // È­»ìÇ¥¸¦ È­¸é °¡ÀåÀÚ¸®¿¡ ¹èÄ¡
+        // í™”ì‚´í‘œë¥¼ í™”ë©´ ê°€ì¥ìë¦¬ì— ë°°ì¹˜
         Vector3 arrowPosition = cam.WorldToViewportPoint(player.position + direction * 5f);
         arrowPosition.x = Mathf.Clamp(arrowPosition.x, 0.05f, 0.95f);
         arrowPosition.y = Mathf.Clamp(arrowPosition.y, 0.05f, 0.95f);
 
-        // ºäÆ÷Æ® ÁÂÇ¥ -> ¿ùµå ÁÂÇ¥ º¯È¯
+        // ë·°í¬íŠ¸ ì¢Œí‘œ -> ì›”ë“œ ì¢Œí‘œ ë³€í™˜
         arrow.transform.position = cam.ViewportToWorldPoint(arrowPosition);
         arrow.transform.position = new Vector3(arrow.transform.position.x, arrow.transform.position.y, 0f);
 
-        // ?? È¯ÀÚÀÇ ¹æÇâÀ» ÇâÇÏµµ·Ï È¸Àü
+        // ğŸ”¥ í™˜ìì˜ ë°©í–¥ì„ í–¥í•˜ë„ë¡ íšŒì „
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        arrow.transform.rotation = Quaternion.Euler(0, 0, angle - 90f); // -90µµ Á¶Á¤(È­»ìÇ¥ ¸ğ¾ç¿¡ ¸Â°Ô)
+        arrow.transform.rotation = Quaternion.Euler(0, 0, angle - 90f); // -90ë„ ì¡°ì •(í™”ì‚´í‘œ ëª¨ì–‘ì— ë§ê²Œ)
     }
 }
