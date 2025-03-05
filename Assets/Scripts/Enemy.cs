@@ -90,6 +90,7 @@ public class Enemy : MonoBehaviour
     IEnumerator FireAtPlayer()
     {
         isFiring = true;
+        yield return new WaitForSeconds(3f); //3초 대기 후 격발
         while (Vector3.Distance(transform.position, player.position) <= 20f)
         {
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);

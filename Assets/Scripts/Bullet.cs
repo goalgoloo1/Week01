@@ -20,8 +20,18 @@ public class Bullet : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            // Damage Player Logic Here
             gameObject.SetActive(false);
         }
+        
     }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("Hit Wall");
+            Destroy(gameObject);
+        }
+    }
+
+
 }

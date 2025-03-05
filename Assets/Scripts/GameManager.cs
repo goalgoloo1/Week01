@@ -1,9 +1,15 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
+
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Prefabs")]
+    public GameObject enemyPrefab;
+    public GameObject patientPrefab; // Prefab to spawn
     public Player player;
     public Canvas_Script canvas;
     public bool isgameover = false;
@@ -23,9 +29,17 @@ public class GameManager : MonoBehaviour
         }
         canvas.score.GetComponent<TextMeshProUGUI>().text = "score : " + score;
     }
-
-    public void Gameover() 
+    public void Gameover()
     {
+        Instantiate(patientPrefab, player.transform.position, Quaternion.identity);
+
+        StartCoroutine(DelayedGameOverActions());
+    }
+
+    IEnumerator DelayedGameOverActions()
+    {
+        yield return new WaitForSeconds(1f); 
+
         isgameover = true;
         canvas.gameOver.SetActive(true);
     }
