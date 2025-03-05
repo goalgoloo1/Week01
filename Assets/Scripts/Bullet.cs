@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector2.right * movespeed * Time.deltaTime);
+        transform.Translate(Vector2.down * movespeed * Time.deltaTime);
         if (50 < Vector3.Distance(player.transform.position, transform.position))
         {
             Debug.Log("destroy");

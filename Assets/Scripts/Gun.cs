@@ -15,6 +15,6 @@ public class Gun : MonoBehaviour
 
     public void fire() 
     {
-        Instantiate(bullet, transform.position + transform.right * 0.7f, transform.rotation);
+        Instantiate(bullet, transform.position + -transform.up * 0.7f, transform.parent.rotation);
     }
 }
