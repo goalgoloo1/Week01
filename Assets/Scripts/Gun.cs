@@ -15,6 +15,8 @@ public class Gun : MonoBehaviour
 
     public void fire() 
     {
-        Instantiate(bullet, transform.position + -transform.up * 0.7f, transform.parent.rotation);
+        GameObject fire_bullet = Instantiate(bullet, transform.position, Quaternion.identity);
+        fire_bullet.GetComponent<Bullet>().SetDirection(-transform.up);
+        //Instantiate(bullet, transform.position, transform.parent.rotation);
     }
 }

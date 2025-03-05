@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class Patient_ScriptTEMP : MonoBehaviour
+public class Patient_Script : MonoBehaviour
 {
     // 환자의 현재 타이머 시간, 최대 타이머 시간
     public float currentTime = 100f;

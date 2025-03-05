@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 public class Player : Character
 {
     public GameObject gun;
+    public Transform firePoint;
     bool isLowhp = false;
     public Canvas canvas;
     void Start()

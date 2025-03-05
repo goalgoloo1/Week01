@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour
     void RotateEnemy() 
     {
         Vector3 direction = (player.position - transform.position).normalized;
-        transform.up = direction; // 플레이어를 향해 회전
+        transform.up = -direction; // 플레이어를 향해 회전
     }
     // 자유롭게 이동 및 회전
     void FreeMove()
