@@ -31,7 +31,6 @@ public class Enemy : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
-        Debug.Log(distance);
 
         if (distance > 20f) //거리가 *f을 넘으면 자유로히움직임
         {
