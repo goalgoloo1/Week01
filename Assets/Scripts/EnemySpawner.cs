@@ -13,8 +13,8 @@ public class EnemySpawner : MonoBehaviour
     private float currentSpawnInterval;
     private int currentEnemyCount = 0;
 
-    public float mapSizeX = 20f;
-    public float mapSizeZ = 20f;
+    public float mapSizeX = 5f;
+    public float mapSizeY = 2f;
 
     void Start()
     {
@@ -51,31 +51,30 @@ public class EnemySpawner : MonoBehaviour
     private Vector3 GetRandomEdgePosition()
     {
         int edge = Random.Range(0, 4); // 0: 왼쪽, 1: 오른쪽, 2: 위쪽, 3: 아래쪽
-        float x = 0, z = 0;
+        float x = 0, y = 0;
 
         switch (edge)
         {
             case 0: // 왼쪽
                 x = -mapSizeX;
-                z = Random.Range(-mapSizeZ, mapSizeZ);
+                y = Random.Range(-mapSizeY, mapSizeY);
                 break;
             case 1: // 오른쪽
                 x = mapSizeX;
-                z = Random.Range(-mapSizeZ, mapSizeZ);
+                y = Random.Range(-mapSizeY, mapSizeY);
                 break;
             case 2: // 위쪽
                 x = Random.Range(-mapSizeX, mapSizeX);
-                z = mapSizeZ;
+                y = mapSizeY;
                 break;
             case 3: // 아래쪽
                 x = Random.Range(-mapSizeX, mapSizeX);
-                z = -mapSizeZ;
+                y = -mapSizeY;
                 break;
         }
 
-        return new Vector3(x, 0, z);
+        return new Vector3(x, y, 0);
     }
-
 
     public static void EnemyDied()
     {
