@@ -8,6 +8,11 @@ public class Patient_Script : MonoBehaviour
     public float maxTime = 100f;
     public float timerDecreaseAmount = 0.1f;
 
+    public GameObject player;
+    public float showUIDistance = 1;
+    public GameObject PressE_UI;
+    public GameObject fill;
+
     // 환자 아래에 타이머를 보여주는 스크립트
     public FloatingTimerBar_Script timerBar;
 
@@ -17,10 +22,27 @@ public class Patient_Script : MonoBehaviour
         timerBar.UpdateTimer(currentTime, maxTime);
     }
 
+    private void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        showUIDistance = 10;
+    }
+
     private void Update()
     {
         // 매 프레임마다 타이머 감소
         TimerDecrease(timerDecreaseAmount);
+
+        // 플레이어가 가까워지면 e UI띄우기
+        float distance = Vector3.Distance(player.transform.position, transform.position);
+        if (distance < showUIDistance && player.GetComponent<Player>().isHaveAdkit)
+        {
+            PressE_UI.SetActive(true);
+        }
+        else
+        {
+            PressE_UI.SetActive(false);
+        }
     }
 
     // 'timerDecreaseAmount'만큼 시간을 빼고, 타이머 업데이트
