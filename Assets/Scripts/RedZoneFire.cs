@@ -8,12 +8,16 @@ public class RedZoneFire : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
     public ParticleSystem explosionParticle;
+    private float deleteExplosion = 5f;
+    private FollowPlayer cameraShake;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
+
+        cameraShake = Camera.main.GetComponent<FollowPlayer>();
 
         StartCoroutine(ActivateRedZone());
     }
@@ -35,6 +39,11 @@ public class RedZoneFire : MonoBehaviour
         col.enabled = true; // 충돌 활성화
         TriggerExplosion();
 
+        if (cameraShake != null)
+        {
+            StartCoroutine(cameraShake.CameraShake(0.5f, 0.3f)); // 0.5초 동안 강도 0.3으로 흔들림
+        }
+
         // dangerTime 후에 레드존 비활성화
         yield return new WaitForSeconds(dangerTime);
         Destroy(gameObject); // 레드존 제거
@@ -54,7 +63,7 @@ public class RedZoneFire : MonoBehaviour
             // 폭발 파티클 실행
             ParticleSystem explosion = Instantiate(explosionParticle, transform.position, Quaternion.identity);
             explosion.Play();
-            Destroy(explosion.gameObject, explosion.main.duration);
+            Destroy(explosion.gameObject, deleteExplosion);
 
         }
     }
