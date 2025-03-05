@@ -7,6 +7,7 @@ public class Player : Character
     public Transform firePoint;
     bool isLowhp = false;
     public Canvas canvas;
+    public bool isCanSave = false;
     void Start()
     {
         movespeed = 10;

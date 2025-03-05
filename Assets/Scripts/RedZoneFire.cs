@@ -74,6 +74,9 @@ public class RedZoneFire : MonoBehaviour
         {
             Destroy(gameObject);
             Destroy(collision.gameObject);
+            // 게임오버
+            GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+            gm.Gameover();
         }
 
         if(collision.CompareTag("Enemy"))
