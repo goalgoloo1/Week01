@@ -4,15 +4,29 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class Player : Character
 {
+    public enum PlayerState 
+    {
+        Walk,
+        Run,
+        Save
+    }
+    public PlayerState currentState = 0;
+
     public GameObject gun;
     public Transform firePoint;
     public Canvas_Script canvas;
     public GameManager gameManager;
+    public bool isHaveAdkit = false;
+
+    public float stamina;
+    public float holdKeyTime = 0f;
     public bool isCanSave = false;
     void Start()
     {
         movespeed = 10;
         hp = 2;
+        stamina = 1.5f;
+        runMultiply = 1;
         gun = transform.GetChild(0).gameObject;
         gameManager = GameObject.FindFirstObjectByType<GameManager>();
         canvas = GameObject.FindFirstObjectByType<Canvas_Script>();
@@ -21,23 +35,99 @@ public class Player : Character
     {
         if (!gameManager.isgameover)
         {
+            // 플레이어 상태변화
+            if (Input.GetKeyDown(KeyCode.LeftShift) && stamina > 0.3f) 
+            {
+                currentState = PlayerState.Run;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift) && currentState == PlayerState.Run) 
+            {
+                currentState = PlayerState.Walk;
+            }
+
+            switch (currentState) 
+            {
+                case PlayerState.Walk:
+                    runMultiply = 1;
+                    break;
+                case PlayerState.Run:
+                    runMultiply = 2;
+                    break;
+                case PlayerState.Save:
+                    runMultiply = 0;
+                    break;
+            }
+
+            // stamina
+            if (currentState == PlayerState.Run)
+            {
+                if (stamina > 0)
+                {
+                    stamina -= Time.deltaTime;
+                }
+                else 
+                {
+                    currentState = PlayerState.Walk;
+                }
+            }
+            else 
+            {
+                stamina += Time.deltaTime/2;
+            }
+            stamina = Mathf.Clamp(stamina, 0, 1.5f);
+            // 스태바로 정보전달
+            canvas.staminaBar.transform.localScale = new Vector3(stamina/1.5f, 1, 1);
+
             // 이동
-            if (Input.GetKey(KeyCode.W))
+            if (currentState != PlayerState.Save)
             {
-                transform.Translate(Vector2.up * movespeed * Time.deltaTime, Space.World);
+                if (Input.GetKey(KeyCode.W))
+                {
+                    transform.Translate(Vector2.up * movespeed * Time.deltaTime * runMultiply, Space.World);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    transform.Translate(Vector2.left * movespeed * Time.deltaTime * runMultiply, Space.World);
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    transform.Translate(Vector2.down * movespeed * Time.deltaTime * runMultiply, Space.World);
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    transform.Translate(Vector2.right * movespeed * Time.deltaTime * runMultiply, Space.World);
+                }
             }
-            if (Input.GetKey(KeyCode.A))
+
+            if (isCanSave && targetPatient) 
             {
-                transform.Translate(Vector2.left * movespeed * Time.deltaTime, Space.World);
+                if (Input.GetKey(KeyCode.E))
+                {
+                    currentState = PlayerState.Save;
+                    holdKeyTime += Time.deltaTime;
+
+                    if (holdKeyTime >= 1f) 
+                    {
+                        Destroy(targetPatient);
+                        holdKeyTime = 0;
+                        isCanSave = false;
+                        currentState = PlayerState.Walk;
+                        transform.Find("AidKit_Indicator").gameObject.SetActive(false);
+                        isHaveAdkit = false;
+                    }
+                }
+                else 
+                {
+                    holdKeyTime = 0;
+                    currentState = PlayerState.Walk;
+                }
+
+                if (targetPatient) 
+                {
+                    targetPatient.GetComponent<Patient_Script>().fill.transform.localScale = new Vector3(1, holdKeyTime / 1, 1);
+                }
             }
-            if (Input.GetKey(KeyCode.S))
-            {
-                transform.Translate(Vector2.down * movespeed * Time.deltaTime, Space.World);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                transform.Translate(Vector2.right * movespeed * Time.deltaTime, Space.World);
-            }
+
             // 플레이어 각도
             Vector3 mousePosition = Input.mousePosition;
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -65,6 +155,7 @@ public class Player : Character
                 {
                     hp++;
                     transform.Find("AidKit_Indicator").gameObject.SetActive(false);
+                    isHaveAdkit = false;
                 }
             }
             // 자해(테스트용)
@@ -86,29 +177,27 @@ public class Player : Character
             }
         }
     }
+
+    GameObject targetPatient;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 살리기
-        if (isCanSave && collision.gameObject.CompareTag("Patient"))
+        //환자 살리기
+        if (isHaveAdkit && collision.gameObject.CompareTag("Patient"))
         {
-            isCanSave = false;
-            transform.Find("AidKit_Indicator").gameObject.SetActive(false);
-            gameManager.score += 10;
-            Destroy(collision.gameObject);
+            isCanSave = true;
+            targetPatient = collision.gameObject;
         }
     }
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        // 구상과 겹쳐있을 때
-        if (isCanSave && collision.gameObject.CompareTag("Patient"))
+        if (collision.gameObject == targetPatient) 
         {
             isCanSave = false;
-            transform.Find("AidKit_Indicator").gameObject.SetActive(false);
-            gameManager.score += 10;
-            canvas.score.GetComponent<TextMeshProUGUI>().text = "score : " + gameManager.score;
-            Destroy(collision.gameObject);
+            holdKeyTime = 0f;
+            targetPatient = null;
         }
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from.tag != gameObject.tag)
