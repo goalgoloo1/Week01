@@ -15,7 +15,6 @@ public class ObjectPooling : MonoBehaviour
         instance = this;
         InitializePool();
     }
-
     void InitializePool()
     {
         for (int i = 0; i < initEnemyCount; i++)
@@ -25,7 +24,6 @@ public class ObjectPooling : MonoBehaviour
             enemyPool.Enqueue(enemy);
         }
     }
-
     public static GameObject GetEnemy(Vector3 spawnPosition)
     {
         GameObject enemy;
@@ -39,7 +37,7 @@ public class ObjectPooling : MonoBehaviour
             enemy = Instantiate(instance.enemyPrefab);
         }
 
-        enemy.transform.position = spawnPosition; // ⭐ 항상 맵 끝에서 스폰
+        enemy.transform.position = spawnPosition; // 항상 맵 끝에서 스폰
         enemy.SetActive(true);
 
         return enemy;
