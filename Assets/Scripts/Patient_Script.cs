@@ -32,10 +32,9 @@ public class Patient_Script : MonoBehaviour
         // 남은 시간이 0보다 작으면, 환자 자기자신 파괴.
         if (currentTime < 0)
         {
+            GameManager gm = GameManager.FindFirstObjectByType<GameManager>();
+            gm.Gameover();
             Destroy(gameObject);
         }
     }
-
-
-
 }

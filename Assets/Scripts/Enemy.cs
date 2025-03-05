@@ -12,11 +12,18 @@ public class Enemy : MonoBehaviour
     private float moveTimer; // 자유 이동 시간 타이머
     private Vector3 randomDirection; // 자유 이동 방향
 
-    void OnEnable()
+    int hp;
+
+    private void Start()
     {
+        hp = 1;
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        moveTimer = 0f;
-        ChooseRandomDirection();
+
+        if (player != null)
+        {
+            moveTimer = 0f;
+            ChooseRandomDirection();
+        }
     }
 
     void Update()
@@ -37,10 +44,17 @@ public class Enemy : MonoBehaviour
         else if (distance <= 10f) //거리가 *f보다 작으면 격발
         {
             RotateEnemy();
-            if (!isFiring)
+            if (!isFiring && player)
             {                                  
                 StartCoroutine(FireAtPlayer());
             }
+        }
+
+        if (hp < 1) 
+        {
+            GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+            gm.score += 3;
+            Destroy(gameObject);
         }
     }
 
@@ -81,6 +95,7 @@ public class Enemy : MonoBehaviour
         {
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             bullet.GetComponent<Bullet>().SetDirection((player.position - transform.position).normalized);
+            bullet.GetComponent<Bullet>().from = gameObject;
             yield return new WaitForSeconds(fireRate);
         }
         isFiring = false;
@@ -103,5 +118,14 @@ public class Enemy : MonoBehaviour
     {
         CancelInvoke();
         StopAllCoroutines();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from.tag != gameObject.tag)
+        {
+            hp--;
+            collision.gameObject.SetActive(false);
+        }
     }
 }

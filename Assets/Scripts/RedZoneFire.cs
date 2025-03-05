@@ -11,6 +11,8 @@ public class RedZoneFire : MonoBehaviour
     private float deleteExplosion = 5f;
     private FollowPlayer cameraShake;
 
+    float testInt = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,6 +22,8 @@ public class RedZoneFire : MonoBehaviour
         cameraShake = Camera.main.GetComponent<FollowPlayer>();
 
         StartCoroutine(ActivateRedZone());
+
+        gameObject.transform.localScale = new Vector3(0,0,0);
     }
 
     IEnumerator ActivateRedZone()
@@ -53,7 +57,15 @@ public class RedZoneFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (testInt < 5)
+        {
+            testInt += Time.deltaTime * 5/3;
+        }
+        else 
+        {
+            testInt = 5;
+        }
+            gameObject.transform.localScale = new Vector3(testInt, testInt, testInt);
     }
 
     void TriggerExplosion()

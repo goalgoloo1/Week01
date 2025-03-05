@@ -15,36 +15,42 @@ public class SpawnManager : MonoBehaviour
     public float spawnRadius = 6f;
     [Header("Map Settings")]
     public float mapSizeX = 20f; 
-    public float mapSizeY = 10f; 
+    public float mapSizeY = 10f;
+
+    GameManager gm;
 
     void Start()
     {
         _Player = Resources.Load<GameObject>("Prefabs/Player");
+        gm = GameObject.FindFirstObjectByType<GameManager>();
 
         StartCoroutine(SpawnEnemies());
         StartCoroutine(SpawnEmergencyKits());
         StartCoroutine(SpawnDeadZones());
         StartCoroutine(SpawnPatients());
+
     }
 
     // Enemy Spawning: 20 units away from Player
     IEnumerator SpawnEnemies()
     {
-        while (true)
+        while (!gm.isgameover)
         {
             yield return new WaitForSeconds(3f);
+            if (gm.isgameover) break;
             if (_Player != null)
             {
                 Vector3 spawnPos = GetRandomPositionFarFromPlayer(20f);
                 Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
             }
         }
+        yield return 0;
     }
 
     // Emergency Kit Spawning: Within 20 units of Player
     IEnumerator SpawnEmergencyKits()
     {
-        while (true)
+        while (!gm.isgameover)
         {
             yield return new WaitForSeconds(3f);
             if (_Player != null)
@@ -53,6 +59,7 @@ public class SpawnManager : MonoBehaviour
                 Instantiate(emergencyKitPrefab, spawnPos, Quaternion.identity);
             }
         }
+        yield return 0;
     }
 
     // Dead Zone Spawning: Within 20 units of Player
@@ -73,12 +80,13 @@ public class SpawnManager : MonoBehaviour
     IEnumerator SpawnPatients()
     {
         yield return new WaitForSeconds(1.5f);
-        while (true)
+        while (!gm.isgameover)
         {
             yield return new WaitForSeconds(3f);
             Vector3 spawnPos = GetRandomScreenPosition();
             Instantiate(patientPrefab, spawnPos, Quaternion.identity);
         }
+        yield return 0;
     }
 
     // Get a random position at least 'minDistance' away from the player
