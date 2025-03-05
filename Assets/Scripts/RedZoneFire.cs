@@ -11,6 +11,11 @@ public class RedZoneFire : MonoBehaviour
     private float deleteExplosion = 5f;
     private FollowPlayer cameraShake;
 
+    public GameObject redZoneBound;
+    private bool isGrowing = true;
+
+
+
     float testInt = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,49 +28,69 @@ public class RedZoneFire : MonoBehaviour
 
         StartCoroutine(ActivateRedZone());
 
-        gameObject.transform.localScale = new Vector3(0,0,0);
+        
+
+        
     }
 
     IEnumerator ActivateRedZone()
     {
         // 초기 상태: 반투명 & 충돌 비활성화
         Color color = spriteRenderer.color;
-        color.a = 0.3f; // 반투명 설정
+        color.a = 0.3f;
         spriteRenderer.color = color;
-        col.enabled = false; // 충돌 비활성화
+        col.enabled = false;
 
-        // appearTime 동안 대기 (반투명 상태 유지)
         yield return new WaitForSeconds(appearTime);
 
-        // 레드존 활성화 (완전히 보이게 만들고 충돌 활성화)
-        color.a = 1f; // 불투명하게 변경
+        // 레드존 활성화
+        color.a = 1f;
         spriteRenderer.color = color;
-        col.enabled = true; // 충돌 활성화
+        col.enabled = true;
         TriggerExplosion();
 
         if (cameraShake != null)
         {
-            StartCoroutine(cameraShake.CameraShake(0.5f, 0.3f)); // 0.5초 동안 강도 0.3으로 흔들림
+            StartCoroutine(cameraShake.CameraShake(0.5f, 0.3f));
+        }
+
+        // 크기 증가가 완료될 때까지 대기
+        while (isGrowing)
+        {
+            yield return null;
         }
 
         // dangerTime 후에 레드존 비활성화
         yield return new WaitForSeconds(dangerTime);
-        Destroy(gameObject); // 레드존 제거
+        DestroyObjects();
+        Destroy(gameObject);
+
+    }
+
+    private void DestroyObjects()
+    {
+       
+
+        if (redZoneBound != null)
+        {
+            Destroy(redZoneBound);
+        }
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        if (testInt < 5)
+        if (isGrowing && testInt < 5)
         {
-            testInt += Time.deltaTime * 5/3;
+            testInt += Time.deltaTime * 5 / 3;
+            gameObject.transform.localScale = new Vector3(testInt, testInt, testInt);
         }
-        else 
+        else
         {
             testInt = 5;
+            isGrowing = false; // 크기 증가가 완료되면 플래그를 false로 설정
         }
-            gameObject.transform.localScale = new Vector3(testInt, testInt, testInt);
     }
 
     void TriggerExplosion()
@@ -82,17 +107,18 @@ public class RedZoneFire : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player"))
+        if (!isGrowing && collision.CompareTag("Player"))
         {
+            DestroyObjects();
             Destroy(gameObject);
             Destroy(collision.gameObject);
-            // 게임오버
             GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
             gm.Gameover();
         }
 
-        if(collision.CompareTag("Enemy"))
+        if (!isGrowing && collision.CompareTag("Enemy"))
         {
+            DestroyObjects();
             Destroy(gameObject);
             Destroy(collision.gameObject);
         }

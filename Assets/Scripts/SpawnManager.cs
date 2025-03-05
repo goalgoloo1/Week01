@@ -7,6 +7,7 @@ public class SpawnManager : MonoBehaviour
     public GameObject enemyPrefab;
     public GameObject emergencyKitPrefab;
     public GameObject redZonePrefab;
+    public GameObject redZoneBoundsPrefab;
     public GameObject patientPrefab;
 
     [Header("References")]
@@ -71,7 +72,12 @@ public class SpawnManager : MonoBehaviour
             if (_Player != null)
             {
                 Vector3 spawnPos = GetRandomPositionNearPlayer(20f);
-                Instantiate(redZonePrefab, spawnPos, Quaternion.identity);
+                GameObject redZoneBound = Instantiate(redZoneBoundsPrefab, spawnPos, Quaternion.identity);
+                GameObject redZone = Instantiate(redZonePrefab, spawnPos, Quaternion.identity);
+
+                redZone.GetComponent<RedZoneFire>().redZoneBound = redZoneBound;
+
+
             }
         }
     }
