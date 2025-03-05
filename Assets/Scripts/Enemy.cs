@@ -52,7 +52,6 @@ public class Enemy : MonoBehaviour
         if (hp < 1) 
         {
             GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
-            gm.score += 3;
             Destroy(gameObject);
         }
     }

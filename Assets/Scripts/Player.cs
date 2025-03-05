@@ -108,6 +108,7 @@ public class Player : Character
 
                     if (holdKeyTime >= 1f) 
                     {
+                        gameManager.score += 1;
                         Destroy(targetPatient);
                         holdKeyTime = 0;
                         isCanSave = false;
@@ -140,7 +141,7 @@ public class Player : Character
                 gun.GetComponent<Gun>().fire();
             }
             // 플레이어 체력이 적으면 UI표시
-            if (hp < 2 && hp > 0)
+            if (hp == 1)
             {
                 canvas.lowHp_UI.SetActive(true);
             }

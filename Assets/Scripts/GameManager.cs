@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-        canvas.score.GetComponent<TextMeshProUGUI>().text = "score : " + score;
+        canvas.score.GetComponent<TextMeshProUGUI>().text = "구출한 부상자 : " + score;
     }
     public void Gameover()
     {
