@@ -7,6 +7,7 @@ public class RedZoneFire : MonoBehaviour
     public float dangerTime = 1f; // 활성화된 후 유지되는 시간
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
+    public ParticleSystem explosionParticle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +33,7 @@ public class RedZoneFire : MonoBehaviour
         color.a = 1f; // 불투명하게 변경
         spriteRenderer.color = color;
         col.enabled = true; // 충돌 활성화
+        TriggerExplosion();
 
         // dangerTime 후에 레드존 비활성화
         yield return new WaitForSeconds(dangerTime);
@@ -43,6 +45,18 @@ public class RedZoneFire : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void TriggerExplosion()
+    {
+        if (explosionParticle != null)
+        {
+            // 폭발 파티클 실행
+            ParticleSystem explosion = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+            explosion.Play();
+            Destroy(explosion.gameObject, explosion.main.duration);
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
