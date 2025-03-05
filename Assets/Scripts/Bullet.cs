@@ -2,20 +2,16 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    int movespeed = 50;
-    GameObject player;
-    void Start()
+    public float speed = 50f;
+    public Vector3 direction;
+    public GameObject from;
+    public void SetDirection(Vector3 dir)
     {
-        player = GameObject.FindFirstObjectByType<Player>().gameObject;
+        direction = dir.normalized;
     }
 
     void Update()
     {
-        transform.Translate(Vector2.down * movespeed * Time.deltaTime);
-        if (50 < Vector3.Distance(player.transform.position, transform.position))
-        {
-            Debug.Log("destroy");
-            Destroy(gameObject);
-        }
+        transform.position += direction * speed * Time.deltaTime;
     }
 }
