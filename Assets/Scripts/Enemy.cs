@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     private bool isFiring = false; // 발사 중인지 여부
     private float moveTimer; // 자유 이동 시간 타이머
     private Vector3 randomDirection; // 자유 이동 방향
+    public ParticleSystem deathParticle;
 
     int hp;
 
@@ -52,10 +53,19 @@ public class Enemy : MonoBehaviour
         if (hp < 1) 
         {
             GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+            TriggerDeath();
             Destroy(gameObject);
         }
     }
-
+    void TriggerDeath()
+    {
+        if (deathParticle != null)
+        {
+            ParticleSystem death = Instantiate(deathParticle, transform.position, Quaternion.identity);
+            death.Play();
+            Destroy(death.gameObject, 2f);
+        }
+    }
     void RotateEnemy() 
     {
         Vector3 direction = (player.position - transform.position).normalized;
@@ -104,19 +114,6 @@ public class Enemy : MonoBehaviour
     void ChooseRandomDirection()
     {
         randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized;
-    }
-
-    // 적 비활성화 및 오브젝트 풀로 반환
-    void DeactivateEnemy()
-    {
-        StopAllCoroutines();
-        ObjectPooling.ReturnEnemy(gameObject);
-    }
-
-    void OnDisable()
-    {
-        CancelInvoke();
-        StopAllCoroutines();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

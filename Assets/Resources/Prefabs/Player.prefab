@@ -609,12 +609,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3795de1fb1b134a41a7698380fc82a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movespeed: 0
   hp: 0
   currentState: 0
   gun: {fileID: 8741946250731471463}
   firePoint: {fileID: 0}
   canvas: {fileID: 0}
   gameManager: {fileID: 0}
+  deathParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
   isHaveAdkit: 0
   stamina: 0
   holdKeyTime: 0
