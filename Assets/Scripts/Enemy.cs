@@ -91,19 +91,32 @@ public class Enemy : Character
     {
         Vector3 direction = (player.position - transform.position).normalized;
         transform.position += direction * movespeed * Time.deltaTime;
-        transform.up = direction; // 플레이어를 향해 회전
+        transform.up = -direction; // 플레이어를 향해 회전
     }
 
     // 3초마다 플레이어에게 총알 발사
     IEnumerator FireAtPlayer()
     {
         isFiring = true;
-        yield return new WaitForSeconds(3f); //3초 대기 후 격발
+        yield return new WaitForSeconds(2f); //2초 대기 후 격발
         while (player && Vector3.Distance(transform.position, player.position) <= 20f)
         {
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            GameObject flash = transform.Find("Flash").gameObject;
+            if (flash)
+            {
+                flash.SetActive(true);
+                yield return new WaitForSeconds(0.1f);
+                flash.SetActive(false);
+            }
+            else 
+            {
+                Debug.Log("적 플래시 못찾음");
+            }
+
+                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             bullet.GetComponent<Bullet>().SetDirection((player.position - transform.position).normalized);
             bullet.GetComponent<Bullet>().from = gameObject.tag;
+            bullet.transform.rotation = transform.rotation;
             yield return new WaitForSeconds(fireRate);
         }
         isFiring = false;

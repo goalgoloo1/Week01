@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 public class Player : Character
@@ -56,7 +55,7 @@ public class Player : Character
                     runMultiply = 1;
                     break;
                 case PlayerState.Run:
-                    runMultiply = 2;
+                    runMultiply = 1.5f;
                     break;
                 case PlayerState.Save:
                     runMultiply = 0;
@@ -144,7 +143,7 @@ public class Player : Character
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
             // 발사
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && currentState != PlayerState.Save)
             {
                 gun.GetComponent<Gun>().fire();
             }
@@ -168,11 +167,11 @@ public class Player : Character
                     isHaveAdkit = false;
                 }
             }
-            // 자해(테스트용)
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                hp--;
-            }
+            //// 자해(테스트용)
+            //if (Input.GetKeyDown(KeyCode.Z))
+            //{
+            //    hp--;
+            //}
             // 사망
             if (hp < 1)
             {

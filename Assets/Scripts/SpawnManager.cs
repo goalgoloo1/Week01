@@ -19,6 +19,7 @@ public class SpawnManager : MonoBehaviour
     public float mapSizeY = 10f;
 
     GameManager gm;
+    GameObject player; 
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnDeadZones());
         StartCoroutine(SpawnPatients());
 
+        player = GameObject.FindFirstObjectByType<Player>().gameObject;
     }
 
     // Enemy Spawning: 20 units away from Player
@@ -71,7 +73,7 @@ public class SpawnManager : MonoBehaviour
             yield return new WaitForSeconds(3f);
             if (_Player != null)
             {
-                Vector3 spawnPos = GetRandomPositionNearPlayer(20f);
+                Vector3 spawnPos = GetRandomPositionNearPlayer(15f);
                 GameObject redZoneBound = Instantiate(redZoneBoundsPrefab, spawnPos, Quaternion.identity);
                 GameObject redZone = Instantiate(redZonePrefab, spawnPos, Quaternion.identity);
                 redZone.GetComponent<RedZoneFire>().redZoneBound = redZoneBound;
@@ -85,7 +87,7 @@ public class SpawnManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         while (!gm.isgameover)
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(4f);
             Vector3 spawnPos = GetRandomScreenPosition();
             Instantiate(patientPrefab, spawnPos, Quaternion.identity);
         }
@@ -111,10 +113,19 @@ public class SpawnManager : MonoBehaviour
     Vector3 GetRandomPositionNearPlayer(float maxDistance)
     {
         Vector2 randomCircle = Random.insideUnitCircle * maxDistance;
-        return new Vector3(
-            _Player.transform.position.x + randomCircle.x,
-            _Player.transform.position.y + randomCircle.y,
-            0);
+        if (player)
+        {
+
+            float x = player.transform.position.x + randomCircle.x;
+            float y = player.transform.position.y + randomCircle.y;
+            x = Mathf.Clamp(x, -mapSizeX, mapSizeX);
+            y = Mathf.Clamp(y, -mapSizeY, mapSizeY);
+            return new Vector3(x, y, 0);
+        }
+        else 
+        {
+            return new Vector3(randomCircle.x, randomCircle.y, 0);
+        } 
     }
 
     // Get a random position within the visible screen area

@@ -707,6 +707,10 @@ PrefabInstance:
       propertyPath: canvas
       value: 
       objectReference: {fileID: 1419012920}
+    - target: {fileID: 9077214189588414879, guid: 87e73c580a601044d9cacf836d21a730, type: 3}
+      propertyPath: healParticle
+      value: 
+      objectReference: {fileID: 5347658223564051670, guid: 5389b238fd9502440846dce26c9a3c1f, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
