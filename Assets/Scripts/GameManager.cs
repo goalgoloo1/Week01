@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     {
         player = GameObject.FindFirstObjectByType<Player>();
         canvas = GameObject.FindFirstObjectByType<Canvas_Script>();
+        canvas.GetComponent<Canvas_Script>().gameOver.SetActive(false);
     }
 
     void Update()
