@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 50f;
+    public float speed = 100f;
     public Vector3 direction;
-    public GameObject from;
+    public string from;
 
     public void SetDirection(Vector3 dir)
     {
         direction = dir.normalized;
+    }
+
+    private void Start()
+    {
+        speed = 50f;
     }
 
     void Update()

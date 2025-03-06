@@ -105,7 +105,8 @@ MonoBehaviour:
   appearTime: 3
   dangerTime: 0.5
   explosionParticle: {fileID: 8461434685034812407, guid: 2349b8c801b07b249bf52c14f5e31bb5, type: 3}
-  redZoneBound: {fileID: 7254918918666600687, guid: 31fa6ef669906ec479d2390f25757dc0, type: 3}
+  redZoneBound: {fileID: 0}
+  isboom: 0
 --- !u!58 &4708771150473282954
 CircleCollider2D:
   m_ObjectHideFlags: 0

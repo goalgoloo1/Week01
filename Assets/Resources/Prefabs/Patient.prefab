@@ -354,11 +354,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTime: 100
   maxTime: 100
-  timerDecreaseAmount: 0.01
+  timerDecreaseAmount: 0.1
   player: {fileID: 0}
   showUIDistance: 100
   PressE_UI: {fileID: 8364701143419649011}
   fill: {fileID: 3275313136189582746}
+  issaving: 1
   timerBar: {fileID: 4662033662084484406}
 --- !u!1 &2663394297003997230
 GameObject:

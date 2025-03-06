@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     {
         player = GameObject.FindFirstObjectByType<Player>();
         canvas = GameObject.FindFirstObjectByType<Canvas_Script>();
+        canvas.GetComponent<Canvas_Script>().gameOver.SetActive(false);
     }
 
     void Update()
@@ -31,7 +32,8 @@ public class GameManager : MonoBehaviour
     }
     public void Gameover()
     {
-        Instantiate(patientPrefab, player.transform.position, Quaternion.identity);
+        GameObject g = Instantiate(patientPrefab, player.transform.position, Quaternion.identity);
+        g.GetComponent<Patient_Script>().timerDecreaseAmount = 1;
 
         StartCoroutine(DelayedGameOverActions());
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class RedZoneFire : MonoBehaviour
 {
     public float appearTime = 3f; // 레드존이 완전히 활성화될 시간
-    public float dangerTime = 1f; // 활성화된 후 유지되는 시간
+    public float dangerTime = 0.1f; // 활성화된 후 유지되는 시간
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
     public ParticleSystem explosionParticle;
@@ -14,7 +14,7 @@ public class RedZoneFire : MonoBehaviour
     public GameObject redZoneBound;
     private bool isGrowing = true;
 
-
+    public bool isboom = false;
 
     float testInt = 0;
 
@@ -28,9 +28,7 @@ public class RedZoneFire : MonoBehaviour
 
         StartCoroutine(ActivateRedZone());
 
-        
-
-        
+        redZoneBound.transform.localScale = new Vector3(size,size,1);
     }
 
     IEnumerator ActivateRedZone()
@@ -64,13 +62,10 @@ public class RedZoneFire : MonoBehaviour
         yield return new WaitForSeconds(dangerTime);
         DestroyObjects();
         Destroy(gameObject);
-
     }
 
     private void DestroyObjects()
     {
-       
-
         if (redZoneBound != null)
         {
             Destroy(redZoneBound);
@@ -78,18 +73,32 @@ public class RedZoneFire : MonoBehaviour
     }
 
 
+    int size = 10;
     // Update is called once per frame
     void Update()
     {
-        if (isGrowing && testInt < 5)
+        if (isGrowing && testInt < size)
         {
-            testInt += Time.deltaTime * 5 / 3;
+            testInt += Time.deltaTime * size / 3;
             gameObject.transform.localScale = new Vector3(testInt, testInt, testInt);
         }
         else
         {
-            testInt = 5;
+            testInt = size;
             isGrowing = false; // 크기 증가가 완료되면 플래그를 false로 설정
+        }
+
+        if (isboom)
+        {
+            Color c = GetComponent<SpriteRenderer>().color;
+            c.a -= 0.5f * Time.deltaTime;
+            GetComponent<SpriteRenderer>().color = c;
+        }
+        else 
+        {
+            Color c = GetComponent<SpriteRenderer>().color;
+            c.a += 0.2f * Time.deltaTime;
+            GetComponent<SpriteRenderer>().color = c;
         }
     }
 
@@ -101,7 +110,7 @@ public class RedZoneFire : MonoBehaviour
             ParticleSystem explosion = Instantiate(explosionParticle, transform.position, Quaternion.identity);
             explosion.Play();
             Destroy(explosion.gameObject, deleteExplosion);
-
+            isboom = true;
         }
     }
 
