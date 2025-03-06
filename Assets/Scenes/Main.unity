@@ -184,17 +184,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2016905241183100518, guid: 825fe72e009f6e54190dbd171d4f704d, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 2998060730676484021, guid: 825fe72e009f6e54190dbd171d4f704d, type: 3}
       propertyPath: m_Name
       value: Canvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 7072852300767571147, guid: 825fe72e009f6e54190dbd171d4f704d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7278064935111788650, guid: 825fe72e009f6e54190dbd171d4f704d, type: 3}
       propertyPath: m_Pivot.x
@@ -274,10 +266,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7278064935111788650, guid: 825fe72e009f6e54190dbd171d4f704d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7810075765494917746, guid: 825fe72e009f6e54190dbd171d4f704d, type: 3}
-      propertyPath: m_RaycastPadding.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
