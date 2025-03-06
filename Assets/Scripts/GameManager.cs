@@ -43,4 +43,5 @@ public class GameManager : MonoBehaviour
         isgameover = true;
         canvas.gameOver.SetActive(true);
     }
+
 }

@@ -9,6 +9,7 @@ TagManager:
   - Emergency Kit
   - Patient
   - Bullet
+  - Water
   layers:
   - Default
   - TransparentFX

@@ -653,6 +653,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5032074795317485322, guid: 87e73c580a601044d9cacf836d21a730, type: 3}
   m_PrefabInstance: {fileID: 177891311}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1096694598 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6424850131472091251, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+  m_PrefabInstance: {fileID: 2030694339}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1096694601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096694598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72cce8afc47b71a4caec0c651522e6d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1167003600
 GameObject:
   m_ObjectHideFlags: 0
@@ -1564,6 +1581,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 256977807681953893, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      propertyPath: m_Size.x
+      value: 0.9973251
+      objectReference: {fileID: 0}
+    - target: {fileID: 256977807681953893, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      propertyPath: m_Size.y
+      value: 0.97559077
+      objectReference: {fileID: 0}
+    - target: {fileID: 256977807681953893, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.0031960083
+      objectReference: {fileID: 0}
+    - target: {fileID: 256977807681953893, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.005619769
+      objectReference: {fileID: 0}
+    - target: {fileID: 256977807681953893, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2263055207430227969, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1608,10 +1645,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainBackground
       objectReference: {fileID: 0}
+    - target: {fileID: 6424850131472091251, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      propertyPath: m_TagString
+      value: Water
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6424850131472091251, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1096694601}
   m_SourcePrefab: {fileID: 100100000, guid: 423d9cbbb3a7b6942a35aa7d238bb59a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

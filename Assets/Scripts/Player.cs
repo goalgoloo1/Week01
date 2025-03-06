@@ -188,6 +188,7 @@ public class Player : Character
             isCanSave = true;
             targetPatient = collision.gameObject;
         }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -206,5 +207,6 @@ public class Player : Character
             hp--;
             collision.gameObject.SetActive(false);
         }
+
     }
 }
