@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
     {
         while (!gm.isgameover)
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(5f);
             if (_Player != null)
             {
                 Vector3 spawnPos = GetRandomPositionNearPlayer(20f);
@@ -74,10 +74,7 @@ public class SpawnManager : MonoBehaviour
                 Vector3 spawnPos = GetRandomPositionNearPlayer(20f);
                 GameObject redZoneBound = Instantiate(redZoneBoundsPrefab, spawnPos, Quaternion.identity);
                 GameObject redZone = Instantiate(redZonePrefab, spawnPos, Quaternion.identity);
-
                 redZone.GetComponent<RedZoneFire>().redZoneBound = redZoneBound;
-
-
             }
         }
     }

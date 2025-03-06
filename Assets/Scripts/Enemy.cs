@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Character
 {
-    public float speed = 3f; // 이동 속도
+    //public float movespeed = 3f; // 이동 속도
     private Transform player; // 플레이어 위치 저장
     public GameObject bulletPrefab; // 총알 프리팹
     public Transform firePoint; // 총알 발사 위치
@@ -12,11 +12,10 @@ public class Enemy : MonoBehaviour
     private float moveTimer; // 자유 이동 시간 타이머
     private Vector3 randomDirection; // 자유 이동 방향
 
-    int hp;
-
     private void Start()
     {
         hp = 1;
+        movespeed = 10f;
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (player != null)
@@ -73,7 +72,7 @@ public class Enemy : MonoBehaviour
             moveTimer = 0f;
         }
 
-        transform.position += randomDirection * (speed * 0.5f) * Time.deltaTime;
+        transform.position += randomDirection * (movespeed * 0.5f) * Time.deltaTime;
         transform.Rotate(0, 0, Random.Range(-60f, 60f) * Time.deltaTime);
     }
 
@@ -81,7 +80,7 @@ public class Enemy : MonoBehaviour
     void ChasePlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        transform.position += direction * movespeed * Time.deltaTime;
         transform.up = direction; // 플레이어를 향해 회전
     }
 
@@ -90,11 +89,11 @@ public class Enemy : MonoBehaviour
     {
         isFiring = true;
         yield return new WaitForSeconds(3f); //3초 대기 후 격발
-        while (Vector3.Distance(transform.position, player.position) <= 20f)
+        while (player && Vector3.Distance(transform.position, player.position) <= 20f)
         {
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             bullet.GetComponent<Bullet>().SetDirection((player.position - transform.position).normalized);
-            bullet.GetComponent<Bullet>().from = gameObject;
+            bullet.GetComponent<Bullet>().from = gameObject.tag;
             yield return new WaitForSeconds(fireRate);
         }
         isFiring = false;
@@ -121,7 +120,7 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from.tag != gameObject.tag)
+        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from != gameObject.tag)
         {
             hp--;
             collision.gameObject.SetActive(false);

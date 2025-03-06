@@ -31,7 +31,8 @@ public class GameManager : MonoBehaviour
     }
     public void Gameover()
     {
-        Instantiate(patientPrefab, player.transform.position, Quaternion.identity);
+        GameObject g = Instantiate(patientPrefab, player.transform.position, Quaternion.identity);
+        g.GetComponent<Patient_Script>().timerDecreaseAmount = 1;
 
         StartCoroutine(DelayedGameOverActions());
     }

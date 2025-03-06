@@ -103,6 +103,7 @@ public class Player : Character
             {
                 if (Input.GetKey(KeyCode.E))
                 {
+                    targetPatient.GetComponent<Patient_Script>().issaving = 0;
                     currentState = PlayerState.Save;
                     holdKeyTime += Time.deltaTime;
 
@@ -121,6 +122,7 @@ public class Player : Character
                 {
                     holdKeyTime = 0;
                     currentState = PlayerState.Walk;
+                    targetPatient.GetComponent<Patient_Script>().issaving = 1;
                 }
 
                 if (targetPatient) 
@@ -202,7 +204,7 @@ public class Player : Character
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from.tag != gameObject.tag)
+        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from != gameObject.tag)
         {
             hp--;
             collision.gameObject.SetActive(false);

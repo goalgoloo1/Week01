@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public int movespeed;
+    public float movespeed;
     public int hp;
     protected int runMultiply = 1;
 
