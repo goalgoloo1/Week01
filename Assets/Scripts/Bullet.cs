@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        speed = 50f;
+        speed = 100f;
     }
 
     void Update()
@@ -36,6 +36,7 @@ public class Bullet : MonoBehaviour
             Debug.Log("Hit Wall");
             Destroy(gameObject);
         }
+        
     }
 
 

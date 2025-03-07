@@ -11,6 +11,7 @@ public class Enemy : Character
     private bool isFiring = false; // 발사 중인지 여부
     private float moveTimer; // 자유 이동 시간 타이머
     private Vector3 randomDirection; // 자유 이동 방향
+    public ParticleSystem deathParticle;
 
     private void Start()
     {
@@ -51,10 +52,19 @@ public class Enemy : Character
         if (hp < 1) 
         {
             GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+            TriggerDeath();
             Destroy(gameObject);
         }
     }
-
+    void TriggerDeath()
+    {
+        if (deathParticle != null)
+        {
+            ParticleSystem death = Instantiate(deathParticle, transform.position, Quaternion.identity);
+            death.Play();
+            Destroy(death.gameObject, 2f);
+        }
+    }
     void RotateEnemy() 
     {
         Vector3 direction = (player.position - transform.position).normalized;
@@ -81,19 +91,32 @@ public class Enemy : Character
     {
         Vector3 direction = (player.position - transform.position).normalized;
         transform.position += direction * movespeed * Time.deltaTime;
-        transform.up = direction; // 플레이어를 향해 회전
+        transform.up = -direction; // 플레이어를 향해 회전
     }
 
     // 3초마다 플레이어에게 총알 발사
     IEnumerator FireAtPlayer()
     {
         isFiring = true;
-        yield return new WaitForSeconds(3f); //3초 대기 후 격발
+        yield return new WaitForSeconds(2f); //2초 대기 후 격발
         while (player && Vector3.Distance(transform.position, player.position) <= 20f)
         {
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            GameObject flash = transform.Find("Flash").gameObject;
+            if (flash)
+            {
+                flash.SetActive(true);
+                yield return new WaitForSeconds(0.1f);
+                flash.SetActive(false);
+            }
+            else 
+            {
+                Debug.Log("적 플래시 못찾음");
+            }
+
+                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             bullet.GetComponent<Bullet>().SetDirection((player.position - transform.position).normalized);
             bullet.GetComponent<Bullet>().from = gameObject.tag;
+            bullet.transform.rotation = transform.rotation;
             yield return new WaitForSeconds(fireRate);
         }
         isFiring = false;
@@ -103,19 +126,6 @@ public class Enemy : Character
     void ChooseRandomDirection()
     {
         randomDirection = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0).normalized;
-    }
-
-    // 적 비활성화 및 오브젝트 풀로 반환
-    void DeactivateEnemy()
-    {
-        StopAllCoroutines();
-        ObjectPooling.ReturnEnemy(gameObject);
-    }
-
-    void OnDisable()
-    {
-        CancelInvoke();
-        StopAllCoroutines();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

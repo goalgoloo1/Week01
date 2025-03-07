@@ -7,6 +7,7 @@ public class ArrowIndicator : MonoBehaviour
     public GameObject arrowPrefab; // 화살표 프리팹
     private List<GameObject> arrows = new List<GameObject>(); // 생성된 화살표 리스트
     private Camera cam;
+    public float indicatorRange = 15f;
 
     void Start()
     {
@@ -54,7 +55,7 @@ public class ArrowIndicator : MonoBehaviour
             Vector3 direction = (target.position - player.position).normalized;
 
             // 화살표를 화면 가장자리에 배치
-            Vector3 arrowPosition = cam.WorldToViewportPoint(player.position + direction * 5f);
+            Vector3 arrowPosition = cam.WorldToViewportPoint(player.position + direction * indicatorRange);
             arrowPosition.x = Mathf.Clamp(arrowPosition.x, 0.05f, 0.95f);
             arrowPosition.y = Mathf.Clamp(arrowPosition.y, 0.05f, 0.95f);
 

@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-using static UnityEditor.Experimental.GraphView.GraphView;
-
 public class GameManager : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -33,7 +31,6 @@ public class GameManager : MonoBehaviour
     public void Gameover()
     {
         GameObject g = Instantiate(patientPrefab, player.transform.position, Quaternion.identity);
-        g.GetComponent<Patient_Script>().timerDecreaseAmount = 1;
 
         StartCoroutine(DelayedGameOverActions());
     }

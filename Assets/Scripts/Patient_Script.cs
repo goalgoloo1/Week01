@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Patient_Script : MonoBehaviour
@@ -7,7 +5,7 @@ public class Patient_Script : MonoBehaviour
     // 환자의 현재 타이머 시간, 최대 타이머 시간
     public float currentTime = 100f;
     public float maxTime = 100f;
-    public float timerDecreaseAmount = 1f;
+    public float timerDecreaseAmount = 0.5f;
 
     public GameObject player;
     public float showUIDistance = 1;
@@ -62,10 +60,12 @@ public class Patient_Script : MonoBehaviour
         if (currentTime < 0)
         {
             GameManager gm = GameManager.FindFirstObjectByType<GameManager>();
-            if (player)
-            {
-                gm.Gameover();
-            }
+            //if (!gm.isgameover)
+            //{
+            //    gm.Gameover();
+            //}
+            GameObject tomb = Resources.Load<GameObject>("Prefabs/Tomb");
+            Instantiate(tomb, transform.position, transform.rotation);
             Destroy(gameObject);
         }
     }

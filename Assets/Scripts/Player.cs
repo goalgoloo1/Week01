@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 public class Player : Character
@@ -16,6 +15,11 @@ public class Player : Character
     public Transform firePoint;
     public Canvas_Script canvas;
     public GameManager gameManager;
+    public ParticleSystem deathParticle;
+    public ParticleSystem healParticle;
+
+    GameObject targetPatient;
+
     public bool isHaveAdkit = false;
 
     public float stamina;
@@ -51,7 +55,7 @@ public class Player : Character
                     runMultiply = 1;
                     break;
                 case PlayerState.Run:
-                    runMultiply = 2;
+                    runMultiply = 1.5f;
                     break;
                 case PlayerState.Save:
                     runMultiply = 0;
@@ -110,6 +114,7 @@ public class Player : Character
                     if (holdKeyTime >= 1f) 
                     {
                         gameManager.score += 1;
+                        TriggerPatientHeal();
                         Destroy(targetPatient);
                         holdKeyTime = 0;
                         isCanSave = false;
@@ -138,7 +143,7 @@ public class Player : Character
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
             // 발사
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && currentState != PlayerState.Save)
             {
                 gun.GetComponent<Gun>().fire();
             }
@@ -157,15 +162,16 @@ public class Player : Character
                 if (transform.Find("AidKit_Indicator").gameObject.activeSelf && hp < 2)
                 {
                     hp++;
+                    TriggerSelfHeal();
                     transform.Find("AidKit_Indicator").gameObject.SetActive(false);
                     isHaveAdkit = false;
                 }
             }
-            // 자해(테스트용)
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                hp--;
-            }
+            //// 자해(테스트용)
+            //if (Input.GetKeyDown(KeyCode.Z))
+            //{
+            //    hp--;
+            //}
             // 사망
             if (hp < 1)
             {
@@ -173,6 +179,7 @@ public class Player : Character
                 //Color c = gameObject.GetComponent<SpriteRenderer>().color;
                 //c.a = 0;
                 //gameObject.GetComponent<SpriteRenderer>().color = c;
+                TriggerDeath();
                 if (gameObject != null)
                 {
                     Destroy(gameObject);
@@ -180,8 +187,38 @@ public class Player : Character
             }
         }
     }
+    void TriggerDeath() 
+    {
+        if (deathParticle != null)
+        {
+            ParticleSystem death = Instantiate(deathParticle, transform.position, Quaternion.identity);
+            death.Play();
+            Destroy(death.gameObject, 2f);
+        }
+    }
+    
 
-    GameObject targetPatient;
+    void TriggerSelfHeal()
+    {
+        if (healParticle != null)
+        {
+            ParticleSystem heal = Instantiate(healParticle, transform.position, Quaternion.identity);
+            heal.Play();
+            Destroy(heal.gameObject, 2f);
+        }
+    }
+    void TriggerPatientHeal()
+    {
+        if (healParticle != null)
+        {
+            ParticleSystem heal = Instantiate(healParticle, targetPatient.transform.position, Quaternion.identity);
+            heal.Play();
+            Destroy(heal.gameObject, 2f);
+        }
+    }
+
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //환자 살리기

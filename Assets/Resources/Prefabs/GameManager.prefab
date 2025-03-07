@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff99c91996ed90246ad5957759f90f31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 0}
-  patientPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 5852853114143785047, guid: f1d16856550a81f4e92e05308799fae3, type: 3}
+  patientPrefab: {fileID: 2387849135948457452, guid: a5e26e8e2a853c049a6ed5466cfe4f60, type: 3}
   player: {fileID: 0}
   canvas: {fileID: 0}
   isgameover: 0
