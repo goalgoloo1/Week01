@@ -77,6 +77,7 @@ public class Patient_Script : MonoBehaviour
         if (allyPrefab != null)
         {
             Instantiate(allyPrefab, transform.position, Quaternion.identity); // 아군 생성
+            
         }
         Destroy(gameObject); // 환자 오브젝트 제거
     }

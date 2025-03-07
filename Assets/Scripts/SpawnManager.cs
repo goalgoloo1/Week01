@@ -9,6 +9,7 @@ public class SpawnManager : MonoBehaviour
     public GameObject redZonePrefab;
     public GameObject redZoneBoundsPrefab;
     public GameObject patientPrefab;
+    public GameObject allyPrefab;
 
     [Header("References")]
     private GameObject _Player;
@@ -29,6 +30,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnEnemies());
         StartCoroutine(SpawnEmergencyKits());
         StartCoroutine(SpawnDeadZones());
+        StartCoroutine(SpawnAlly());
         //StartCoroutine(SpawnPatients());
 
         player = GameObject.FindFirstObjectByType<Player>().gameObject;
@@ -48,6 +50,21 @@ public class SpawnManager : MonoBehaviour
             }
         }
         yield return 0;
+    }
+
+    IEnumerator SpawnAlly()
+    {
+        while (!gm.isgameover)
+        {
+            yield return new WaitForSeconds(3f);
+            if (gm.isgameover) break;
+            if (_Player != null)
+            {
+                Vector3 spawnPos = GetRandomPositionNearPlayer(20f);
+                Instantiate(allyPrefab, spawnPos, Quaternion.identity);
+
+            }
+        }
     }
 
     // Emergency Kit Spawning: Within 20 units of Player
@@ -80,6 +97,8 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
+
+    
 
     // Patient Spawning: After 1.5 seconds, then every 3 seconds
     IEnumerator SpawnPatients()
