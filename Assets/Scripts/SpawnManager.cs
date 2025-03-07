@@ -29,7 +29,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnEnemies());
         StartCoroutine(SpawnEmergencyKits());
         StartCoroutine(SpawnDeadZones());
-        StartCoroutine(SpawnPatients());
+        //StartCoroutine(SpawnPatients());
 
         player = GameObject.FindFirstObjectByType<Player>().gameObject;
     }

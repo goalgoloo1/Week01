@@ -360,6 +360,7 @@ MonoBehaviour:
   PressE_UI: {fileID: 8364701143419649011}
   fill: {fileID: 3275313136189582746}
   issaving: 1
+  allyPrefab: {fileID: 3560518885218608096, guid: bb94e7cca5ca29c45a097b38e1e91a53, type: 3}
   timerBar: {fileID: 4662033662084484406}
 --- !u!1 &2663394297003997230
 GameObject:

@@ -13,12 +13,14 @@ public class Patient_Script : MonoBehaviour
     public GameObject fill;
 
     public int issaving = 1;
+    public GameObject allyPrefab; // 아군 프리팹
 
     // 환자 아래에 타이머를 보여주는 스크립트
     public FloatingTimerBar_Script timerBar;
 
     private void Awake()
     {
+        
         // 시작시 타이머 업데이트 하기
         timerBar.UpdateTimer(currentTime, maxTime);
     }
@@ -68,5 +70,14 @@ public class Patient_Script : MonoBehaviour
             Instantiate(tomb, transform.position, transform.rotation);
             Destroy(gameObject);
         }
+    }
+
+    public void HealToAlly()
+    {
+        if (allyPrefab != null)
+        {
+            Instantiate(allyPrefab, transform.position, Quaternion.identity); // 아군 생성
+        }
+        Destroy(gameObject); // 환자 오브젝트 제거
     }
 }

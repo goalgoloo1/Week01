@@ -115,7 +115,8 @@ public class Player : Character
                     {
                         gameManager.score += 1;
                         TriggerPatientHeal();
-                        Destroy(targetPatient);
+                        targetPatient.GetComponent<Patient_Script>().HealToAlly(); // 환자를 아군으로 치료
+
                         holdKeyTime = 0;
                         isCanSave = false;
                         currentState = PlayerState.Walk;

@@ -74,19 +74,23 @@ public class RedZoneFire : MonoBehaviour
 
 
     int size = 10;
-    // Update is called once per frame
+
+    
     void Update()
     {
+
         if (isGrowing && testInt < size)
         {
             testInt += Time.deltaTime * size / 3;
             gameObject.transform.localScale = new Vector3(testInt, testInt, testInt);
         }
-        else
+        else if (isGrowing)
         {
             testInt = size;
             isGrowing = false; // 크기 증가가 완료되면 플래그를 false로 설정
+            
         }
+
 
         if (isboom)
         {
@@ -116,7 +120,7 @@ public class RedZoneFire : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isGrowing && collision.CompareTag("Player"))
+        if ( collision.CompareTag("Player"))
         {
             DestroyObjects();
             Destroy(gameObject);
@@ -125,11 +129,15 @@ public class RedZoneFire : MonoBehaviour
             gm.Gameover();
         }
 
-        if (!isGrowing && collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
             DestroyObjects();
             Destroy(gameObject);
             Destroy(collision.gameObject);
         }
     }
+
+
+
+
 }
