@@ -17,6 +17,7 @@ public class Player : Character
     public GameManager gameManager;
     public ParticleSystem deathParticle;
     public ParticleSystem healParticle;
+    public GameObject soundWave;
 
     GameObject targetPatient;
 
@@ -166,6 +167,9 @@ public class Player : Character
                     transform.Find("AidKit_Indicator").gameObject.SetActive(false);
                     isHaveAdkit = false;
                 }
+
+                // 테스트용 소리 내기
+                Instantiate(soundWave);
             }
             //// 자해(테스트용)
             //if (Input.GetKeyDown(KeyCode.Z))

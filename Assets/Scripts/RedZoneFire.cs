@@ -116,7 +116,7 @@ public class RedZoneFire : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isGrowing && collision.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
             DestroyObjects();
             Destroy(gameObject);
