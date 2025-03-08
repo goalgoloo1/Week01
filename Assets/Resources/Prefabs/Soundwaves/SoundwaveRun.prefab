@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   increaseSpeed: 200
-  decreaseSpeed: 10
+  decreaseSpeed: 40
   changeTime: 0.1
   isIncrease: 0
   isActive: 0

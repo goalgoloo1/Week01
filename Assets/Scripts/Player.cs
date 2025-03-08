@@ -203,9 +203,10 @@ public class Player : Character
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
 
-            // 플레이어 각도와 Field of View 각도 동기화
+            // 플레이어 위치, 각도와 Field of View 위치, 각도 동기화
             float currentAngle = transform.eulerAngles.z;
-            fieldOfView.SetAimDirection(UtilsClass.GetVectorFromAngle(0));
+            fieldOfView.SetAimDirection(UtilsClass.GetVectorFromAngle(angle + 90));
+            fieldOfView.SetOrigin(this.transform.position);
 
             // 발사
             if (Input.GetMouseButtonDown(0) && currentState != PlayerState.Save)
