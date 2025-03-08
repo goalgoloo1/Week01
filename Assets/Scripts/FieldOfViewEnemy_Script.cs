@@ -11,6 +11,8 @@ public class FieldOfViewEnemy_Script : MonoBehaviour
     private float startingAngle;
     private float viewDistance;
 
+    public Enemy enemy; // 적을 참조할 변수 추가
+
     private void Start()
     {
         mesh = new Mesh();

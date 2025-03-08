@@ -4,23 +4,40 @@ using CodeMonkey.Utils;
 
 public class Enemy : Character
 {
-    //public float movespeed = 3f; // 이동 속도
+    
     private Transform player; // 플레이어 위치 저장
     public GameObject bulletPrefab; // 총알 프리팹
     public Transform firePoint; // 총알 발사 위치
-    private float fireRate = 3f; // 발사 주기
+    
+    // 시야각 가져오기
+    [SerializeField] private FieldOfViewEnemy_Script fieldOfViewEnemy;
+    public GameObject fieldOfViewEnemyPrefab;
+
+    public float alertDistance = 0f;
+    public float cautionDistance = 0f;
+    public float fireRate = 3f; // 발사 주기
+    public float moveTimer = 0f; // 자유 이동 시간 타이머
+
     private bool isFiring = false; // 발사 중인지 여부
-    private float moveTimer; // 자유 이동 시간 타이머
+    
     private Vector3 randomDirection; // 자유 이동 방향
     public ParticleSystem deathParticle;
 
-    // 시야각 가져오기
-    [SerializeField] private FieldOfViewEnemy_Script fieldOfViewEnemy;
+    
 
     private void Start()
     {
-        hp = 1;
+        // Field of View 오브젝트 생성
+        GameObject fovObject = Instantiate(fieldOfViewEnemyPrefab, Vector2.zero, Quaternion.identity);
+        fieldOfViewEnemy = fovObject.GetComponent<FieldOfViewEnemy_Script>();
+        fieldOfViewEnemy.enemy = this; // Field of View에 자신을 참조하게 설정
+
+        // 시야각의 시작 위치와 회전 설정
+        fieldOfViewEnemy.SetOrigin(transform.position);
+        fieldOfViewEnemy.transform.rotation = transform.rotation; // 적과 같은 회전으로 설정
+
         movespeed = 10f;
+        hp = 1;
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (player != null)
@@ -38,17 +55,18 @@ public class Enemy : Character
 
         // 적의 현재 각도를 가져와 시야각을 업데이트
         float currentAngle = transform.eulerAngles.z;
-        fieldOfViewEnemy.SetAimDirection(UtilsClass.GetVectorFromAngle(0));
+        fieldOfViewEnemy.SetAimDirection(UtilsClass.GetVectorFromAngle(currentAngle));
+        fieldOfViewEnemy.SetOrigin(this.transform.position);
 
-        if (distance > 20f) //거리가 *f을 넘으면 자유로히움직임
+        if (distance > cautionDistance) //거리가 *f을 넘으면 자유로히움직임
         {
             FreeMove();
         }
-        else if (distance <= 20f && distance > 10f) //거리가 *f과 *f사이면 플레이어추적
+        else if (distance <= cautionDistance && distance > alertDistance) //거리가 *f과 *f사이면 플레이어추적
         {
             ChasePlayer();
         }
-        else if (distance <= 10f) //거리가 *f보다 작으면 격발
+        else if (distance <= alertDistance) //거리가 *f보다 작으면 격발
         {
             RotateEnemy();
             if (!isFiring && player)
