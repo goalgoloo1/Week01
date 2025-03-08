@@ -123,16 +123,19 @@ public class Player : Character
                     moveDirection += Vector2.right;
                 }
 
-                // 속도 계산
+                // 음파 생성 조건
                 if (moveDirection != Vector2.zero)
                 {
                     playerRb.linearVelocity = moveDirection.normalized * movespeed * runMultiply;
 
                     // 음파 생성
-                    if (Time.time - lastSoundwaveTime >= soundwaveInterval) // 1초가 지났는지 확인
+                    if (Time.time - lastSoundwaveTime >= soundwaveInterval) // 음파 생성 간격 확인
                     {
-                        makeSoundwave(currentState == PlayerState.Run ? soundwaveRun : soundwaveWalk);
-                        lastSoundwaveTime = Time.time; // 현재 시간을 마지막 음파 생성 시간으로 업데이트
+                        GameObject soundwave = currentState == PlayerState.Run ? soundwaveRun : soundwaveWalk;
+                        GameObject newSoundwave = Instantiate(soundwave, transform.position, transform.rotation);
+
+                        // 음파 생성 후 마지막 생성 시간 업데이트
+                        lastSoundwaveTime = Time.time;
                     }
                 }
                 else

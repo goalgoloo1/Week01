@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7722025243700261988}
   - component: {fileID: 1789533338010896742}
   - component: {fileID: 6495581901944381626}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: EmergencyKit
   m_TagString: Emergency Kit
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5569908837425305966}
   - component: {fileID: 974847006894079795}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6659023889206449424}
   - component: {fileID: 2765977101621750624}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cross (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,7 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2101770103519269459}
   - component: {fileID: 4907121837722447369}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1348738687817980909}
   - component: {fileID: 8591939345329366626}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Cross (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
