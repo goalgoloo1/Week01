@@ -38,7 +38,7 @@ public class Soundwave_Script : MonoBehaviour
         }
 
         // 작아지며 그 크기가 눈에 보이지 않을 정도가 되면, 삭제
-        if (isActive && soundwaveScale.magnitude < 0.01f)
+        if (isActive && soundwaveScale.magnitude < 0.1f)
         {
             DeleteSoundwave();
         }

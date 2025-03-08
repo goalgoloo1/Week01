@@ -14,12 +14,12 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Field Of View Object
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Mask
+  - Behind Mask Enemy Silhouette
+  - Black
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Top
+    uniqueID: 3513036883
     locked: 0
   m_RenderingLayers:
   - Default

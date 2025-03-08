@@ -1,6 +1,6 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
+using CodeMonkey.Utils;
+
 public class Player : Character
 {
     public enum PlayerState 
@@ -17,7 +17,17 @@ public class Player : Character
     public GameManager gameManager;
     public ParticleSystem deathParticle;
     public ParticleSystem healParticle;
-    public GameObject soundWave;
+    public Rigidbody2D playerRb;
+
+    // 시야각 가져오기
+    [SerializeField] private FieldOfView_Script fieldOfView;
+
+    // 음파 가져오기
+    public GameObject soundwaveWalk;
+    public GameObject soundwaveRun;
+    public GameObject soundwaveShoot;
+    private float lastSoundwaveTime = 0f; // 마지막 음파 생성 시간
+    private float soundwaveInterval = 0.4f; // 음파 생성 간격 (1초)
 
     GameObject targetPatient;
 
@@ -26,15 +36,18 @@ public class Player : Character
     public float stamina;
     public float holdKeyTime = 0f;
     public bool isCanSave = false;
+
     void Start()
     {
-        movespeed = 10;
+        movespeed = 5;
         hp = 2;
-        stamina = 1.5f;
+        stamina = 99999f;
         runMultiply = 1;
+
         gun = transform.GetChild(0).gameObject;
         gameManager = GameObject.FindFirstObjectByType<GameManager>();
         canvas = GameObject.FindFirstObjectByType<Canvas_Script>();
+        playerRb = GetComponent<Rigidbody2D>();
     }
     void Update()
     {
@@ -50,16 +63,20 @@ public class Player : Character
                 currentState = PlayerState.Walk;
             }
 
+            // 플레이어 상태에 따른 속도 배수 변화
             switch (currentState) 
             {
                 case PlayerState.Walk:
                     runMultiply = 1;
+                    soundwaveInterval = 0.4f;
                     break;
                 case PlayerState.Run:
-                    runMultiply = 1.5f;
+                    runMultiply = 3f;
+                    soundwaveInterval = 0.15f;
                     break;
                 case PlayerState.Save:
                     runMultiply = 0;
+                    soundwaveInterval = 0.4f;
                     break;
             }
 
@@ -79,13 +96,52 @@ public class Player : Character
             {
                 stamina += Time.deltaTime/2;
             }
-            stamina = Mathf.Clamp(stamina, 0, 1.5f);
+            stamina = Mathf.Clamp(stamina, 0, stamina);
+
             // 스태바로 정보전달
-            canvas.staminaBar.transform.localScale = new Vector3(stamina/1.5f, 1, 1);
+            // canvas.staminaBar.transform.localScale = new Vector3(stamina/1.5f, 1, 1);
 
             // 이동
             if (currentState != PlayerState.Save)
             {
+                Vector2 moveDirection = Vector2.zero;
+
+                if (Input.GetKey(KeyCode.W))
+                {
+                    moveDirection += Vector2.up;
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    moveDirection += Vector2.left;
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    moveDirection += Vector2.down;
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    moveDirection += Vector2.right;
+                }
+
+                // 속도 계산
+                if (moveDirection != Vector2.zero)
+                {
+                    playerRb.linearVelocity = moveDirection.normalized * movespeed * runMultiply;
+
+                    // 음파 생성
+                    if (Time.time - lastSoundwaveTime >= soundwaveInterval) // 1초가 지났는지 확인
+                    {
+                        makeSoundwave(currentState == PlayerState.Run ? soundwaveRun : soundwaveWalk);
+                        lastSoundwaveTime = Time.time; // 현재 시간을 마지막 음파 생성 시간으로 업데이트
+                    }
+                }
+                else
+                {
+                    playerRb.linearVelocity = Vector2.zero; // 방향 없을 때 속도 0
+                }
+
+                /*
+                옛날 translate 이동 코드
                 if (Input.GetKey(KeyCode.W))
                 {
                     transform.Translate(Vector2.up * movespeed * Time.deltaTime * runMultiply, Space.World);
@@ -102,7 +158,10 @@ public class Player : Character
                 {
                     transform.Translate(Vector2.right * movespeed * Time.deltaTime * runMultiply, Space.World);
                 }
+                */
             }
+
+
 
             if (isCanSave && targetPatient) 
             {
@@ -143,11 +202,17 @@ public class Player : Character
             Vector2 direction = (mousePosition - transform.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
+
+            // 플레이어 각도와 Field of View 각도 동기화
+            float currentAngle = transform.eulerAngles.z;
+            fieldOfView.SetAimDirection(UtilsClass.GetVectorFromAngle(0));
+
             // 발사
             if (Input.GetMouseButtonDown(0) && currentState != PlayerState.Save)
             {
                 gun.GetComponent<Gun>().fire();
             }
+
             // 플레이어 체력이 적으면 UI표시
             if (hp == 1)
             {
@@ -157,6 +222,7 @@ public class Player : Character
             {
                 canvas.lowHp_UI.SetActive(false);
             }
+
             // 자힐
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -167,15 +233,14 @@ public class Player : Character
                     transform.Find("AidKit_Indicator").gameObject.SetActive(false);
                     isHaveAdkit = false;
                 }
-
-                // 테스트용 소리 내기
-                Instantiate(soundWave);
             }
+
             //// 자해(테스트용)
             //if (Input.GetKeyDown(KeyCode.Z))
             //{
             //    hp--;
             //}
+
             // 사망
             if (hp < 1)
             {
@@ -201,6 +266,10 @@ public class Player : Character
         }
     }
     
+    void makeSoundwave(GameObject _soundwave)
+    {
+        Instantiate(_soundwave, transform.position, transform.rotation);
+    }
 
     void TriggerSelfHeal()
     {
@@ -220,7 +289,6 @@ public class Player : Character
             Destroy(heal.gameObject, 2f);
         }
     }
-
 
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -249,7 +317,7 @@ public class Player : Character
         {
             hp--;
             collision.gameObject.SetActive(false);
+            Instantiate(deathParticle);
         }
-
     }
 }

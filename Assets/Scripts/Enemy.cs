@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using CodeMonkey.Utils;
 
 public class Enemy : Character
 {
@@ -12,6 +13,9 @@ public class Enemy : Character
     private float moveTimer; // 자유 이동 시간 타이머
     private Vector3 randomDirection; // 자유 이동 방향
     public ParticleSystem deathParticle;
+
+    // 시야각 가져오기
+    [SerializeField] private FieldOfViewEnemy_Script fieldOfViewEnemy;
 
     private void Start()
     {
@@ -31,6 +35,10 @@ public class Enemy : Character
         if (player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
+
+        // 적의 현재 각도를 가져와 시야각을 업데이트
+        float currentAngle = transform.eulerAngles.z;
+        fieldOfViewEnemy.SetAimDirection(UtilsClass.GetVectorFromAngle(0));
 
         if (distance > 20f) //거리가 *f을 넘으면 자유로히움직임
         {
@@ -56,6 +64,7 @@ public class Enemy : Character
             Destroy(gameObject);
         }
     }
+
     void TriggerDeath()
     {
         if (deathParticle != null)
@@ -70,6 +79,7 @@ public class Enemy : Character
         Vector3 direction = (player.position - transform.position).normalized;
         transform.up = -direction; // 플레이어를 향해 회전
     }
+    
     // 자유롭게 이동 및 회전
     void FreeMove()
     {
@@ -113,7 +123,7 @@ public class Enemy : Character
                 Debug.Log("적 플래시 못찾음");
             }
 
-                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             bullet.GetComponent<Bullet>().SetDirection((player.position - transform.position).normalized);
             bullet.GetComponent<Bullet>().from = gameObject.tag;
             bullet.transform.rotation = transform.rotation;

@@ -125,7 +125,7 @@ public class RedZoneFire : MonoBehaviour
             gm.Gameover();
         }
 
-        if (!isGrowing && collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
             DestroyObjects();
             Destroy(gameObject);

@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
@@ -97,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6905003993355485741}
   - component: {fileID: 5918080331556871453}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Tree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
