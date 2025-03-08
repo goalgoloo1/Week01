@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 100f;
+    public float speed = 15f;
     public Vector3 direction;
     public string from;
 
@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        speed = 100f;
+        speed = 15f;
     }
 
     void Update()
@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            Debug.Log("Hit Wall");
+            //Debug.Log("Hit Wall");
             Destroy(gameObject);
         }
         

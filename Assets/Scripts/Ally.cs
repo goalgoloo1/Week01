@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Ally : MonoBehaviour
 {
-    public int hp = 2; // 아군의 체력
+    public int hp = 5; // 아군의 체력
     public GameObject patientPrefab; // 환자 프리팹
     public ParticleSystem damageParticle; // 데미지 입을 때 파티클
     public GameObject bulletPrefab; // 총알 프리팹
@@ -98,7 +98,7 @@ public class Ally : MonoBehaviour
     IEnumerator FireAtTarget()
     {
         isFiring = true;
-        yield return new WaitForSeconds(3f); // 1초 대기 후 발사
+        yield return new WaitForSeconds(0.5f); // 1초 대기 후 발사
 
         while (currentTarget != null && Vector3.Distance(transform.position, currentTarget.transform.position) <= 15f)
         {

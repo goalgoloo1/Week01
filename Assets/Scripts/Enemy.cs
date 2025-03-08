@@ -5,7 +5,7 @@ public class Enemy : Character
 {
     public GameObject bulletPrefab; // 총알 프리팹
     public Transform firePoint; // 총알 발사 위치
-    private float fireRate = 3f; // 발사 주기
+    private float fireRate = 2f; // 발사 주기
     private bool isFiring = false; // 발사 중인지 여부
     private float moveTimer; // 자유 이동 시간 타이머
     private Vector3 randomDirection; // 자유 이동 방향
@@ -17,7 +17,7 @@ public class Enemy : Character
 
     private void Start()
     {
-        hp = 1;
+        hp = 3;
         movespeed = 10f;
         player = GameObject.FindGameObjectWithTag("Player"); // 플레이어 찾기
         moveTimer = 0f;
@@ -56,12 +56,35 @@ public class Enemy : Character
             }
         }
 
-        // 체력이 0 이하이면 사망
-        if (hp < 1)
+        //// 체력이 0 이하이면 사망
+        //if (hp < 1)
+        //{
+        //    GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+        //    TriggerDeath();
+        //    Destroy(gameObject);
+        //}
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 적의 총알에 맞았을 때
+        if ((collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from == "Ally") ||
+            (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from == "Player"))
         {
-            GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
-            TriggerDeath();
-            Destroy(gameObject);
+            hp--; // 체력 감소
+            collision.gameObject.SetActive(false); // 총알 비활성화
+
+            if (deathParticle != null)
+            {
+                Instantiate(deathParticle, transform.position, Quaternion.identity); // 데미지 파티클 생성
+            }
+
+            // 체력이 0 이하이면 환자로 변환
+            if (hp <= 0)
+            {
+               // GameManager gm = GameObject.FindFirstObjectByType<GameManager>();
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -125,7 +148,7 @@ public class Enemy : Character
     IEnumerator FireAtTarget()
     {
         isFiring = true;
-        yield return new WaitForSeconds(2f); // 2초 대기 후 발사
+        yield return new WaitForSeconds(0.5f); // 2초 대기 후 발사
 
         while (currentTarget != null && Vector3.Distance(transform.position, currentTarget.transform.position) <= 10f)
         {
@@ -183,12 +206,12 @@ public class Enemy : Character
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from != gameObject.tag)
-        {
-            hp--;
-            collision.gameObject.SetActive(false);
-        }
-    }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from != gameObject.tag)
+    //    {
+    //        hp--;
+    //        collision.gameObject.SetActive(false);
+    //    }
+    //}
 }

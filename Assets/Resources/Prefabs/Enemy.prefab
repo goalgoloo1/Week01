@@ -738,6 +738,7 @@ Transform:
   - {fileID: 8301701016130108304}
   - {fileID: 3442306874692889870}
   - {fileID: 8417749384445346780}
+  - {fileID: 2057579528322698806}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3429885400225720116
@@ -755,7 +756,7 @@ MonoBehaviour:
   movespeed: 0
   hp: 0
   bulletPrefab: {fileID: 5029610912062255231, guid: 6eb1591d4b32d2343aa5c90df3766343, type: 3}
-  firePoint: {fileID: 8417749384445346780}
+  firePoint: {fileID: 2057579528322698806}
   deathParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
 --- !u!50 &2226063310483142469
 Rigidbody2D:
@@ -821,6 +822,37 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000011920929, y: -0.05550599}
   m_Size: {x: 1.4102974, y: 2.1207733}
   m_Direction: 0
+--- !u!1 &6549255570906146655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 1561236088524279046, guid: 0ae4b8fe8023f8d46a5aa88907496f66, type: 3}
+  m_PrefabInstance: {fileID: 8910565934733078183}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8417749384445346780}
+  m_Layer: 0
+  m_Name: 'GunPosition (Missing Prefab with guid: 0ae4b8fe8023f8d46a5aa88907496f66)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8417749384445346780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 1115039990420008315, guid: 0ae4b8fe8023f8d46a5aa88907496f66, type: 3}
+  m_PrefabInstance: {fileID: 8910565934733078183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6549255570906146655}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalPosition: {x: -0.84, y: -1.284, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2063645250553158777}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!1 &6599315556844330654
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +1027,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &7202627676798246717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057579528322698806}
+  m_Layer: 0
+  m_Name: GunPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2057579528322698806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202627676798246717}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalPosition: {x: -0.84, y: -1.284, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2063645250553158777}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!1 &7500470860049081647
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,8 +1236,3 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ae4b8fe8023f8d46a5aa88907496f66, type: 3}
---- !u!4 &8417749384445346780 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1115039990420008315, guid: 0ae4b8fe8023f8d46a5aa88907496f66, type: 3}
-  m_PrefabInstance: {fileID: 8910565934733078183}
-  m_PrefabAsset: {fileID: 0}
