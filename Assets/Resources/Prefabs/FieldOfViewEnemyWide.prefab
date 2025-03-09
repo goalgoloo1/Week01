@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5687767163071430175}
   - component: {fileID: 8251910952314336379}
   - component: {fileID: 4967255531341375547}
-  m_Layer: 0
-  m_Name: FieldOfViewEnemy
+  m_Layer: 8
+  m_Name: FieldOfViewEnemyWide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -102,4 +102,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 8
+  fov: 140
+  viewDistance: 5
   enemy: {fileID: 3429885400225720116, guid: f1d16856550a81f4e92e05308799fae3, type: 3}

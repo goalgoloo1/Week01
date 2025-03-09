@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6637825974446754950}
   - component: {fileID: 3312883371628586657}
   - component: {fileID: 1645286038608356903}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SoundwaveWalk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,8 +104,7 @@ MonoBehaviour:
   increaseSpeed: 50
   decreaseSpeed: 5
   changeTime: 0.1
-  isIncrease: 0
-  isActive: 0
+  isIncreasing: 1
 --- !u!58 &1645286038608356903
 CircleCollider2D:
   m_ObjectHideFlags: 0

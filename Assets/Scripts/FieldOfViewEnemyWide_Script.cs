@@ -2,23 +2,25 @@ using UnityEngine;
 using CodeMonkey.Utils;
 using UnityEngine.UIElements;
 
-public class FieldOfViewEnemy_Script : MonoBehaviour
+public class FieldOfViewEnemyWide_Script : MonoBehaviour
 {
     [SerializeField] private LayerMask layerMask;
+
     private Mesh mesh;
-    private float fov;
+    
+    // 시야각, 시야범위
+    public float fov;
+    public float viewDistance;
+
     private Vector3 origin;
     private float startingAngle;
-    private float viewDistance;
-
+    
     public Enemy enemy; // 적을 참조할 변수 추가
 
     private void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-        viewDistance = 5f;
-        fov = 90f;
         origin = Vector3.zero;
     }
 
