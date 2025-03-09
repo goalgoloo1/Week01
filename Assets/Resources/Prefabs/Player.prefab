@@ -325,16 +325,18 @@ MonoBehaviour:
   hp: 0
   currentState: 0
   gun: {fileID: 6462777158864582031}
+  currentGunType: 0
   firePoint: {fileID: 0}
   canvas: {fileID: 0}
   gameManager: {fileID: 0}
   deathParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
   healParticle: {fileID: 5347658223564051670, guid: 5389b238fd9502440846dce26c9a3c1f, type: 3}
-  playerRb: {fileID: 0}
+  playerRb: {fileID: 8886664948003956292}
   fieldOfView: {fileID: 0}
   soundwaveWalk: {fileID: 2981080032049220416, guid: 1860c01d692ec444cb91d3ecc5ffcb56, type: 3}
   soundwaveRun: {fileID: 2981080032049220416, guid: 9d7f89421504afb43bd16a1fd1ed6347, type: 3}
-  soundwaveShoot: {fileID: 0}
+  soundwaveBlueGun: {fileID: 2981080032049220416, guid: 9b4929e308b391d479b2eec0d1dbbee9, type: 3}
+  soundwaveRedGun: {fileID: 2981080032049220416, guid: e8d65e7022c148a4993b9b3221ca8781, type: 3}
   isHaveAdkit: 0
   stamina: 99999
   holdKeyTime: 0
@@ -1024,7 +1026,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc8658bebc7c0a9429bab0b4a43cf65d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 0}
+  bullet: {fileID: 5029610912062255231, guid: 6eb1591d4b32d2343aa5c90df3766343, type: 3}
+  blueBullet: {fileID: 5029610912062255231, guid: c3d8fcbfa4271e94dbab6f412af56ed0, type: 3}
+  redBullet: {fileID: 5029610912062255231, guid: 241ba4b9425641849a68fde6a9b99f73, type: 3}
 --- !u!1 &6537365494544272756
 GameObject:
   m_ObjectHideFlags: 0

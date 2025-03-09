@@ -1,5 +1,6 @@
 using UnityEngine;
 using CodeMonkey.Utils;
+using TMPro;
 
 public class Player : Character
 {
@@ -9,10 +10,22 @@ public class Player : Character
         Run,
         Save
     }
+
+    public enum GunType
+    {
+        BlueGun,
+        RedGun
+    }
+
     public PlayerState currentState = 0;
 
+    // 총
     public GameObject gun;
+    public GunType currentGunType;
     public Transform firePoint;
+    public int blueGunNumber;
+    public int redGunNumber;
+
     public Canvas_Script canvas;
     public GameManager gameManager;
     public ParticleSystem deathParticle;
@@ -25,7 +38,9 @@ public class Player : Character
     // 음파 가져오기
     public GameObject soundwaveWalk;
     public GameObject soundwaveRun;
-    public GameObject soundwaveShoot;
+    public GameObject soundwaveBlueGun;
+    public GameObject soundwaveRedGun;
+
     private float lastSoundwaveTime = 0f; // 마지막 음파 생성 시간
     private float soundwaveInterval = 0.4f; // 음파 생성 간격 (1초)
 
@@ -39,6 +54,8 @@ public class Player : Character
 
     void Start()
     {
+        currentGunType = GunType.BlueGun; // 초기 총 종류 설정
+
         movespeed = 5;
         hp = 2;
         stamina = 99999f;
@@ -51,6 +68,11 @@ public class Player : Character
     }
     void Update()
     {
+        // 마우스 휠 스크롤 입력 처리
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        CheckMouseWheel(scrollInput);
+
+
         if (!gameManager.isgameover)
         {
             // 플레이어 상태변화
@@ -214,7 +236,7 @@ public class Player : Character
             // 발사
             if (Input.GetMouseButtonDown(0) && currentState != PlayerState.Save)
             {
-                gun.GetComponent<Gun>().fire();
+                PlayerGunFire();
             }
 
             // 플레이어 체력이 적으면 UI표시
@@ -269,10 +291,58 @@ public class Player : Character
             Destroy(death.gameObject, 2f);
         }
     }
-    
-    void makeSoundwave(GameObject _soundwave)
+
+    void CheckMouseWheel(float _scrollInput)
     {
-        Instantiate(_soundwave, transform.position, transform.rotation);
+        if (_scrollInput > 0f) // 위로 스크롤
+        {
+            SwitchGun(1);
+            Debug.Log("Current Gun: " + currentGunType);
+        }
+        else if (_scrollInput < 0f) // 아래로 스크롤
+        {
+            SwitchGun(-1);
+            Debug.Log("Current Gun: " + currentGunType);
+        }
+    }
+
+    void SwitchGun(int WheelDirection)
+    {
+        // 총 종류를 변경 direction은 휠 방향을 의미
+        int gunCount = System.Enum.GetValues(typeof(GunType)).Length;
+        currentGunType = (GunType)(((int)currentGunType + WheelDirection + gunCount) % gunCount);
+
+        // 현재 총 HUD 변경
+        if (currentGunType == GunType.BlueGun)
+        {
+            canvas.TurnOff(canvas.redGunUI);
+            canvas.TurnOn(canvas.blueGunUI);
+            canvas.UpdateGunNumber(canvas.blueGunUINum, blueGunNumber);
+        }
+        else if (currentGunType == GunType.RedGun)
+        {
+            canvas.TurnOff(canvas.blueGunUI);
+            canvas.TurnOn(canvas.redGunUI);
+            canvas.UpdateGunNumber(canvas.redGunUINum, redGunNumber);
+        }
+    }
+
+    void PlayerGunFire()
+    {
+        if (currentGunType == GunType.BlueGun && blueGunNumber > 0)
+        {
+            gun.GetComponent<Gun>().BlueGunFire();
+            Instantiate(soundwaveBlueGun, transform.position, transform.rotation);
+            blueGunNumber -= 1;
+            canvas.UpdateGunNumber(canvas.blueGunUINum, blueGunNumber);
+        }
+        else if (currentGunType == GunType.RedGun && redGunNumber > 0)
+        {
+            gun.GetComponent<Gun>().RedGunFire();
+            Instantiate(soundwaveRedGun, transform.position, transform.rotation);
+            redGunNumber -= 1;
+            canvas.UpdateGunNumber(canvas.redGunUINum, redGunNumber);
+        }
     }
 
     void TriggerSelfHeal()

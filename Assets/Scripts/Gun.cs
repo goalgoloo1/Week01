@@ -4,20 +4,34 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
     public GameObject bullet;
-    void Start()
-    {
-        bullet = Resources.Load<GameObject>("Prefabs/Bullet");
-    }
+    public GameObject blueBullet;
+    public GameObject redBullet;
 
-    void Update()
-    {
-        
-    }
 
     public void fire() 
     {
         StartCoroutine(flash());
         GameObject fire_bullet = Instantiate(bullet, transform.position, Quaternion.identity);
+        fire_bullet.GetComponent<Bullet>().SetDirection(-transform.up);
+        fire_bullet.GetComponent<Bullet>().from = transform.parent.gameObject.tag;
+        fire_bullet.GetComponent<Bullet>().transform.rotation = transform.parent.rotation;
+        //Instantiate(bullet, transform.position, transform.parent.rotation);
+    }
+
+    public void BlueGunFire()
+    {
+        StartCoroutine(flash());
+        GameObject fire_bullet = Instantiate(blueBullet, transform.position, Quaternion.identity);
+        fire_bullet.GetComponent<Bullet>().SetDirection(-transform.up);
+        fire_bullet.GetComponent<Bullet>().from = transform.parent.gameObject.tag;
+        fire_bullet.GetComponent<Bullet>().transform.rotation = transform.parent.rotation;
+        //Instantiate(bullet, transform.position, transform.parent.rotation);
+    }
+
+    public void RedGunFire()
+    {
+        StartCoroutine(flash());
+        GameObject fire_bullet = Instantiate(redBullet, transform.position, Quaternion.identity);
         fire_bullet.GetComponent<Bullet>().SetDirection(-transform.up);
         fire_bullet.GetComponent<Bullet>().from = transform.parent.gameObject.tag;
         fire_bullet.GetComponent<Bullet>().transform.rotation = transform.parent.rotation;
