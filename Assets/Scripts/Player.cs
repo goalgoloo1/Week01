@@ -384,13 +384,4 @@ public class Player : Character
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Bullet") && collision.gameObject.GetComponent<Bullet>().from != gameObject.tag)
-        {
-            hp--;
-            collision.gameObject.SetActive(false);
-            Instantiate(deathParticle);
-        }
-    }
 }

@@ -2,20 +2,30 @@ using UnityEngine;
 using UnityEngine.AI;
 using CodeMonkey.Utils;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
     // 플레이어의 Transform
+    [Header("Player transform")]
     public Transform player;
     private Vector3 lastPlayerPosition; // 마지막으로 본 플레이어 위치
 
+    // 적 기본 총알
+    [Header("Bullet")]
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 20f; 
+    public Transform gunPosition;
+
     // 뒤에서 암살
+    [Header("Assassination")]
     [SerializeField] GameObject PressE_UI;
     public float assassinRange = 1f; // 공격 범위
     public float rotationThresholdMin = 130f;
     public float rotationThresholdMax = 180f;
 
     // 실제 raycast 시야각
+    [Header("FoV of Enemy")]
     [SerializeField] private LayerMask layerMask;
     public float wideFov;
     public float wideViewDistance;
@@ -31,6 +41,7 @@ public class Enemy : MonoBehaviour
     public GameObject fieldOfViewEnemyPrefabLong;
 
     // 인공지능
+    [Header("Enemy AI")]
     public NavMeshAgent agent;
     public enum EnemyState
     {
@@ -45,11 +56,12 @@ public class Enemy : MonoBehaviour
     private int currentZoneMovePointIndex;
     public bool isWalkingToZoneMovePoint;
     // Patroling
-    public Vector3 walkPoint;
-    bool isWalkPointSet;
+    private Vector3 walkPoint;
+    private bool isWalkPointSet;
     // Attacking
-    public float timeBetweenAttacks;
-    bool isAlreadyAttacked;
+    public float attackRange = 10f;
+    public float shootingInterval = 1f;
+    private bool isShooting = false;
     // Searching
     public float searchingWalkPointRange;
     public float searchingTime;
@@ -93,7 +105,7 @@ public class Enemy : MonoBehaviour
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.white);
                 break;
             case EnemyState.Chasing:
-                ChasePlayer();
+                AttackPlayer(wideFov, wideViewDistance, longFov, longViewDistance);
                 fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.red);
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.red);
                 break;
@@ -103,11 +115,6 @@ public class Enemy : MonoBehaviour
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.yellow);
                 break;
         }
-
-        // if (!isWalkingToZoneMovePoint) ZoneMove();
-        // if (!isPlayerInSightRange && !isPlayerInAttackRange) Patroling();
-        // if (isPlayerInSightRange && !isPlayerInAttackRange) ChasePlayer();
-        // if (isPlayerInSightRange && isPlayerInAttackRange) AttackPlayer();
 
         // 암살시 적과 플레이어 거리 확인
         Vector3 enemyPosition = transform.position;
@@ -169,10 +176,10 @@ public class Enemy : MonoBehaviour
         float currentAngle = transform.eulerAngles.z;
 
         // 시야각의 시작과 끝 각도 계산
-        float wideFOVStartAngle = currentAngle - wideFov / 2; // 넓은 시야각 시작
-        float wideFOVEndAngle = currentAngle + wideFov / 2;   // 넓은 시야각 끝
-        float longFOVStartAngle = currentAngle - longFov / 2;  // 좁은 시야각 시작
-        float longFOVEndAngle = currentAngle + longFov / 2;    // 좁은 시야각 끝
+        float wideFOVStartAngle = currentAngle - wideFov / 2;
+        float wideFOVEndAngle = currentAngle + wideFov / 2;
+        float longFOVStartAngle = currentAngle - longFov / 2;
+        float longFOVEndAngle = currentAngle + longFov / 2;
 
         // Wide FOV 설정
         fieldOfViewEnemyWide.SetAimDirection(UtilsClass.GetVectorFromAngle(wideFOVStartAngle + 90 + wideFov * 2 - wideFov / 2)); // 각도 보정 추가
@@ -207,10 +214,6 @@ public class Enemy : MonoBehaviour
                 {
                     Debug.Log("플레이어가 아닌 오브젝트에 닿았습니다." + hit.collider.name);
                 }
-            }
-            else
-            {
-                Debug.Log("어떤 오브젝트에도 닿지 않았습니다.");
             }
 
             // Gizmos를 통해 Ray 시각화
@@ -312,28 +315,79 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void AttackPlayer()
+    void AttackPlayer(float _wideFov, float _wideDistance, float _longFov, float _longDistance)
     {
-        // 적이 움직이지 않도록 하는 코드
-        agent.SetDestination(transform.position);
+        Vector3 origin = transform.position;
+        int rayCount = 50;
 
-        transform.LookAt(player);
+        float wideStartingAngle = transform.eulerAngles.z - _wideFov / 2f + 90;
+        float longStartingAngle = transform.eulerAngles.z - _longFov / 2f + 90;
 
-        if (!isAlreadyAttacked)
+        float wideAngleIncrease = _wideFov / rayCount;
+        float longAngleIncrease = _longFov / rayCount;
+
+        bool playerInSight = false; // 플레이어가 시야에 있는지 확인하기 위한 플래그
+
+        for (int i = 0; i <= rayCount; i++)
         {
-            // 어택 코드
-            // 어택 코드
-            // 어택 코드
+            float wideAngle = wideStartingAngle + wideAngleIncrease * i;
+            float longAngle = longStartingAngle + longAngleIncrease * i;
 
+            RaycastHit2D wideHit = Physics2D.Raycast(origin, UtilsClass.GetVectorFromAngle(wideAngle), _wideDistance, layerMask);
+            RaycastHit2D longHit = Physics2D.Raycast(origin, UtilsClass.GetVectorFromAngle(longAngle), _longDistance, layerMask);
 
-            isAlreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            // 플레이어가 발견된 경우
+            if (wideHit.collider != null && wideHit.collider.CompareTag("Player") ||
+                longHit.collider != null && longHit.collider.CompareTag("Player"))
+            {
+                playerInSight = true;
+                break; // 플레이어를 찾았으므로 루프 종료
+            }
+        }
+
+        // 플레이어가 시야에 있을 때 총을 쏘기 시작
+        if (playerInSight && !isShooting)
+        {
+            isShooting = true;
+            agent.SetDestination(transform.position); // 이동 멈춤
+            StartCoroutine(ShootAtPlayer()); // 총 쏘기 시작
+        }
+        else if (!playerInSight)
+        {
+            // 플레이어가 시야에 없을 경우 마지막 위치로 이동
+            ChasePlayer();
         }
     }
 
-    void ResetAttack()
+
+    private IEnumerator ShootAtPlayer()
     {
-        isAlreadyAttacked = false;
+        while (isShooting)
+        {
+            // 플레이어 방향 계산, 적 몸 비틀기
+            Vector3 directionToPlayer = (player.position - gunPosition.position).normalized;
+            float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg - 90;
+            Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
+            this.transform.rotation = targetRotation; 
+
+            // 총알 생성
+            GameObject bullet = Instantiate(bulletPrefab, gunPosition.position, targetRotation);
+            Debug.Log("총을 쏩니다!");
+
+            // 총알 rigidbody 가져온 후, 힘 가하기
+            Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+            bulletRb.linearVelocity = directionToPlayer * bulletSpeed;
+
+            // 총을 쏜 후 잠시 대기
+            yield return new WaitForSeconds(shootingInterval);
+
+            // 다시 거리 체크
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            if (distanceToPlayer > attackRange)
+            {
+                isShooting = false; // 공격 범위를 벗어나면 멈춤
+            }
+        }
     }
 
 }

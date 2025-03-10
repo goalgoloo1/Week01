@@ -8,16 +8,6 @@ public class Gun : MonoBehaviour
     public GameObject redBullet;
 
 
-    public void fire() 
-    {
-        StartCoroutine(flash());
-        GameObject fire_bullet = Instantiate(bullet, transform.position, Quaternion.identity);
-        fire_bullet.GetComponent<Bullet>().SetDirection(-transform.up);
-        fire_bullet.GetComponent<Bullet>().from = transform.parent.gameObject.tag;
-        fire_bullet.GetComponent<Bullet>().transform.rotation = transform.parent.rotation;
-        //Instantiate(bullet, transform.position, transform.parent.rotation);
-    }
-
     public void BlueGunFire()
     {
         StartCoroutine(flash());
