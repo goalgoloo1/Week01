@@ -6,35 +6,37 @@ public class Bullet : MonoBehaviour
     public Vector3 direction;
     public string from;
 
-    public void SetDirection(Vector3 dir)
+    public enum BulletColor
     {
-        direction = dir.normalized;
+        Yellow,
+        Blue,
+        Red
     }
 
-    private void Start()
-    {
-        speed = 100f;
-    }
+    public BulletColor bulletColor;
+
+
+
+
+
 
     void Update()
     {
         transform.position += direction * speed * Time.deltaTime;
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+
+    private void OnTriggerEnter2D(Collider2D _collision)
     {
-        if (collision.CompareTag("Player"))
-        {
-            gameObject.SetActive(false);
-        }
-        
-    }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (_collision.gameObject.CompareTag("Field Of View Object"))
         {
             Debug.Log("Hit Wall");
             Destroy(gameObject);
         }
+    }
+
+    public void SetDirection(Vector3 _dir)
+    {
+        direction = _dir.normalized;
     }
 }

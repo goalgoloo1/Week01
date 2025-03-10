@@ -1,6 +1,6 @@
 using UnityEngine;
 using CodeMonkey.Utils;
-using TMPro;
+using static Enemy;
 
 public class Player : Character
 {
@@ -17,7 +17,7 @@ public class Player : Character
         RedGun
     }
 
-    public PlayerState currentState = 0;
+    public PlayerState currentState = PlayerState.Walk;
 
     // 총
     public GameObject gun;
@@ -52,6 +52,10 @@ public class Player : Character
     public float holdKeyTime = 0f;
     public bool isCanSave = false;
 
+
+
+
+
     void Start()
     {
         currentGunType = GunType.BlueGun; // 초기 총 종류 설정
@@ -61,7 +65,6 @@ public class Player : Character
         stamina = 99999f;
         runMultiply = 1;
 
-        gun = transform.GetChild(0).gameObject;
         gameManager = GameObject.FindFirstObjectByType<GameManager>();
         canvas = GameObject.FindFirstObjectByType<Canvas_Script>();
         playerRb = GetComponent<Rigidbody2D>();
@@ -164,26 +167,6 @@ public class Player : Character
                 {
                     playerRb.linearVelocity = Vector2.zero; // 방향 없을 때 속도 0
                 }
-
-                /*
-                옛날 translate 이동 코드
-                if (Input.GetKey(KeyCode.W))
-                {
-                    transform.Translate(Vector2.up * movespeed * Time.deltaTime * runMultiply, Space.World);
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    transform.Translate(Vector2.left * movespeed * Time.deltaTime * runMultiply, Space.World);
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    transform.Translate(Vector2.down * movespeed * Time.deltaTime * runMultiply, Space.World);
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    transform.Translate(Vector2.right * movespeed * Time.deltaTime * runMultiply, Space.World);
-                }
-                */
             }
 
 
@@ -270,9 +253,6 @@ public class Player : Character
             if (hp < 1)
             {
                 gameManager.Gameover();
-                //Color c = gameObject.GetComponent<SpriteRenderer>().color;
-                //c.a = 0;
-                //gameObject.GetComponent<SpriteRenderer>().color = c;
                 TriggerDeath();
                 if (gameObject != null)
                 {
@@ -334,6 +314,7 @@ public class Player : Character
             Instantiate(soundwaveBlueGun, transform.position, transform.rotation);
             blueGunNumber -= 1;
             canvas.UpdateGunNumber(canvas.blueGunUINum, blueGunNumber);
+            Debug.Log("총 발사!");
         }
         else if (currentGunType == GunType.RedGun && redGunNumber > 0)
         {
@@ -341,6 +322,7 @@ public class Player : Character
             Instantiate(soundwaveRedGun, transform.position, transform.rotation);
             redGunNumber -= 1;
             canvas.UpdateGunNumber(canvas.redGunUINum, redGunNumber);
+            Debug.Log("총 발사!");
         }
     }
 
@@ -364,16 +346,28 @@ public class Player : Character
     }
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D _collision)
     {
-        //환자 살리기
-        if (isHaveAdkit && collision.gameObject.CompareTag("Patient"))
+        // 총알 맞기
+        if (_collision.gameObject.CompareTag("Bullet"))
         {
-            isCanSave = true;
-            targetPatient = collision.gameObject;
+            Bullet bullet = _collision.gameObject.GetComponent<Bullet>();
+
+            if (bullet.bulletColor == Bullet.BulletColor.Yellow)
+            {
+                hp -= 1;
+                Instantiate(deathParticle, transform.position, transform.rotation);
+            }
         }
 
+        //환자 살리기
+        if (isHaveAdkit && _collision.gameObject.CompareTag("Patient"))
+        {
+            isCanSave = true;
+            targetPatient = _collision.gameObject;
+        }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == targetPatient) 

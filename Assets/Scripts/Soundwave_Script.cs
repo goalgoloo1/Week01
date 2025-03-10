@@ -55,18 +55,17 @@ public class Soundwave_Script : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("충돌 감지: " + other.name); // 어떤 오브젝트와 충돌했는지 로그 출력
-
         // 적이 음파에 닿았을 때
         if (other.CompareTag("Enemy"))
         {
-            Debug.Log("들린다들린다");
+            Debug.Log("들린다들린다~!");
 
-            // 적 정보 가져온 후, 해당 적이 Chasing 상태로 변함
+            // 적 정보 가져온 후, 해당 적이 Checking 상태로 변함
             Enemy enemy = other.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.currentState = Enemy.EnemyState.Chasing;
+                enemy.currentState = Enemy.EnemyState.Checking;
+                enemy.MoveToPlayerPosition();
             }
         }
     }

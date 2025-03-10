@@ -1531,9 +1531,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  hp: 10
+  stunDuration: 3.5
   bulletPrefab: {fileID: 5029610912062255231, guid: 6eb1591d4b32d2343aa5c90df3766343, type: 3}
   bulletSpeed: 70
   gunPosition: {fileID: 3862364297735622895}
+  BuleDamagedParticle: {fileID: 5347658223564051670, guid: 2c0dbfee8803200499f23c7b45b344d4, type: 3}
+  RedDamagedParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
   PressE_UI: {fileID: 4039250041235736191}
   assassinRange: 2.5
   rotationThresholdMin: 130
@@ -1553,7 +1557,7 @@ MonoBehaviour:
   fieldOfViewEnemyPrefabLong: {fileID: 8178410400162374663, guid: 5520b90de10a5f947a5318b0af3e882f, type: 3}
   agent: {fileID: 0}
   currentState: 0
-  normalLinearSpeed: 5
+  normalLinearSpeed: 4
   normalAngularSpeed: 100
   fastLinearSpeed: 8
   fastAngularSpeed: 200
@@ -1562,7 +1566,7 @@ MonoBehaviour:
   shootingInterval: 1
   attackRange: 15
   searchingWalkPointRange: 4
-  searchingTime: 20
+  searchingTime: 12
 --- !u!50 &-8421688033606681487
 Rigidbody2D:
   serializedVersion: 5

@@ -12,11 +12,18 @@ public class Enemy : MonoBehaviour
     public Transform player;
     private Vector3 lastPlayerPosition; // 마지막으로 본 플레이어 위치
 
+    [Header("Enemy Hp")]
+    public int hp;
+    public float stunDuration;
+    private bool isStunned = false;
+
     // 적 기본 총알
     [Header("Bullet")]
     public GameObject bulletPrefab;
     public float bulletSpeed = 20f; 
     public Transform gunPosition;
+    public ParticleSystem BuleDamagedParticle;
+    public ParticleSystem RedDamagedParticle;
 
     // 뒤에서 암살
     [Header("Assassination")]
@@ -50,7 +57,9 @@ public class Enemy : MonoBehaviour
     {
         Patrolling,
         Chasing,
-        Searching
+        Searching,
+        Stunning,
+        Checking
     }
     public EnemyState currentState = EnemyState.Patrolling;
 
@@ -106,9 +115,19 @@ public class Enemy : MonoBehaviour
     {
         FOVUpdate();
 
+        BeingAssassinate();
+
         CheckFieldOfView(wideFov, wideViewDistance);
         CheckFieldOfView(longFov, longViewDistance);
 
+        // 체력 체크
+        if (hp <= 0)
+        {
+            EnemyDie();
+        }
+
+        // 스턴 상태 체크
+        if (isStunned) return;
 
         // AI 3가지 상황 체크
         switch (currentState)
@@ -118,6 +137,17 @@ public class Enemy : MonoBehaviour
                 ChangeSpeed(normalLinearSpeed, normalAngularSpeed);
                 fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.white);
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.white);
+                break;
+            case EnemyState.Checking:
+                // 목표 위치에 도달했는지 확인
+                if (agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    // 목표에 도달하면 Searching 상태로 전환
+                    StartCoroutine(SearchForPlayer(1f));
+                }
+                ChangeSpeed(fastLinearSpeed, fastAngularSpeed);
+                fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.yellow);
+                fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.yellow);
                 break;
             case EnemyState.Chasing:
                 AttackPlayer(wideFov, wideViewDistance, longFov, longViewDistance);
@@ -132,35 +162,71 @@ public class Enemy : MonoBehaviour
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.yellow);
                 break;
         }
+    }
 
-        // 암살시 적과 플레이어 거리 확인
-        Vector3 enemyPosition = transform.position;
-        Vector3 directionToPlayer = player.position - enemyPosition;
-        float distance = directionToPlayer.magnitude;
-
-        // 암살시 플레이어가 공격 범위 내에 있는지 확인
-        if (distance < assassinRange)
+    private void OnTriggerEnter2D(Collider2D _collision)
+    {
+        if (_collision.gameObject.CompareTag("Bullet"))
         {
-            float angleToPlayer = Vector3.SignedAngle(transform.up, directionToPlayer.normalized, Vector3.forward);
-            float angleDifference = Mathf.Abs(angleToPlayer);
+            Bullet bullet = _collision.gameObject.GetComponent<Bullet>();
 
-            // 각도 차이가 지정한 범위에 있는지 확인
-            if (angleDifference >= rotationThresholdMin && angleDifference <= rotationThresholdMax)
+            // 적이 순찰중일때는 파란총 -> 스턴, 빨간총 -> 주변살피기
+            if (currentState == EnemyState.Patrolling)
             {
-                ShowEKeyUI(true);
-
-                // E 키를 눌렀는지 확인
-                if (Input.GetKeyDown(KeyCode.E))
+                if (bullet.bulletColor == Bullet.BulletColor.Blue)
                 {
-                    KillEnemy();
+                    DamagedBullet("Blue");
+                    Stun();
+                }
+                else if (bullet.bulletColor == Bullet.BulletColor.Red)
+                {
+                    DamagedBullet("Red");
+                    currentState = EnemyState.Searching;
+                }
+            }
+            // 적이 주변을 살피거나 이미 쫓아갈 때는 두 총 -> 모두 쫓아가기
+            else if ((currentState == EnemyState.Chasing || currentState == EnemyState.Searching || currentState == EnemyState.Checking))
+            {
+                if (bullet.bulletColor == Bullet.BulletColor.Blue)
+                {
+                    DamagedBullet("Blue");
+                    currentState = EnemyState.Chasing;
+                }
+                else if (bullet.bulletColor == Bullet.BulletColor.Red)
+                {
+                    DamagedBullet("Red");
+                    currentState = EnemyState.Chasing;
+                }
+            }
+            // 적이 스턴중일때는 두 총 -> 데미지만
+            else if (currentState == EnemyState.Stunning)
+            {
+                if (bullet.bulletColor == Bullet.BulletColor.Blue)
+                {
+                    DamagedBullet("Blue");
+                }
+                else if (bullet.bulletColor == Bullet.BulletColor.Red)
+                {
+                    DamagedBullet("Red");
                 }
             }
         }
-        else
+    }
+
+    public void DamagedBullet(string _color)
+    {
+        if (_color == "Blue")
         {
-            ShowEKeyUI(false);
+            hp -= 1;
+            Instantiate(BuleDamagedParticle, transform.position, transform.rotation);
+        }
+        else if (_color == "Red")
+        {
+            hp -= 4;
+            Instantiate(RedDamagedParticle, transform.position, transform.rotation);
         }
     }
+
 
     public void FOVStart()
     {
@@ -185,6 +251,10 @@ public class Enemy : MonoBehaviour
         // 시야각의 시작 위치와 회전 설정
         fieldOfViewEnemyLong.SetOrigin(transform.position);
         fieldOfViewEnemyLong.transform.rotation = transform.rotation; // 적과 같은 회전으로 설정
+
+        // 시작시 시야각 활성화
+        fieldOfViewEnemyWide.FoVTurnOnOff(true);
+        fieldOfViewEnemyLong.FoVTurnOnOff(true);
     }
 
     public void FOVUpdate()
@@ -240,7 +310,7 @@ public class Enemy : MonoBehaviour
                     // Field of View Object에 가로막힘
                     Debug.Log("Field of View Object에 의해 가로막힘");
                     // 장애물과의 거리로 Ray 길이 조정
-                    Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * hit.distance, Color.red);
+                    Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * hit.distance, UnityEngine.Color.red);
                 }
                 else
                 {
@@ -250,13 +320,16 @@ public class Enemy : MonoBehaviour
             else
             {
                 // 장애물에 부딪히지 않으면 원래 거리로 Ray그리기
-                Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * _viewDistance, Color.red);
+                Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * _viewDistance, UnityEngine.Color.red);
             }
         }
     }
 
     void ZoneMove()
     {
+        if (isStunned) // Stun 상태일 때는 이동하지 않도록 체크
+            return;
+
         if (zoneMovePoints.Count == 0)
             return; // 탐사할 포인트가 없으면 종료
 
@@ -277,6 +350,18 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
+    public void MoveToPlayerPosition()
+    {
+        Vector3 playerPosition = player.position; // 플레이어의 위치 가져오기
+
+        // 적의 위치를 플레이어의 위치로 설정
+        agent.SetDestination(playerPosition);
+
+        // 이동 후 Searching 상태로 전환을 위해 상태를 Checking으로 설정
+        currentState = EnemyState.Checking;
+    }
+
 
     void ShowEKeyUI(bool _isPlayerClose)
     {
@@ -393,6 +478,15 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private IEnumerator SearchForPlayer(float _waitSecond)
+    {
+        // 잠시 대기 (예: 1초)
+        yield return new WaitForSeconds(_waitSecond);
+
+        // Searching 상태로 전환
+        currentState = EnemyState.Searching;
+    }
+
 
     private IEnumerator ShootAtPlayer()
     {
@@ -422,6 +516,68 @@ public class Enemy : MonoBehaviour
                 isShooting = false; // 공격 범위를 벗어나면 멈춤
             }
         }
+    }
+
+    public void Stun()
+    {
+        isStunned = true;
+        agent.isStopped = true;
+        currentState = EnemyState.Stunning; // Stun 상태로 변경
+
+        // 시야각 UI 끄기
+        fieldOfViewEnemyWide.FoVTurnOnOff(false);
+        fieldOfViewEnemyLong.FoVTurnOnOff(false);
+
+        Invoke("RecoverFromStun", stunDuration); // 일정 시간 후 Stun 해제
+    }
+
+    private void RecoverFromStun()
+    {
+        isStunned = false;
+        agent.isStopped = false;
+        currentState = EnemyState.Patrolling; // Patrolling 상태로 복귀
+
+        // 시야각 UI 켜기
+        fieldOfViewEnemyWide.FoVTurnOnOff(true);
+        fieldOfViewEnemyLong.FoVTurnOnOff(true);
+    }
+
+    public void BeingAssassinate()
+    {
+        // 암살시 적과 플레이어 거리 확인
+        Vector3 enemyPosition = transform.position;
+        Vector3 directionToPlayer = player.position - enemyPosition;
+        float distance = directionToPlayer.magnitude;
+
+        // 암살시 플레이어가 공격 범위 내에 있는지 확인
+        if (distance < assassinRange)
+        {
+            float angleToPlayer = Vector3.SignedAngle(transform.up, directionToPlayer.normalized, Vector3.forward);
+            float angleDifference = Mathf.Abs(angleToPlayer);
+
+            // 각도 차이가 지정한 범위에 있는지 확인
+            if (angleDifference >= rotationThresholdMin && angleDifference <= rotationThresholdMax)
+            {
+                ShowEKeyUI(true);
+
+                // E 키를 눌렀는지 확인
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    KillEnemy();
+                }
+            }
+        }
+        else
+        {
+            ShowEKeyUI(false);
+        }
+    }
+
+    public void EnemyDie()
+    {
+        fieldOfViewEnemyWide.DestroyFOV();
+        fieldOfViewEnemyLong.DestroyFOV();
+        Destroy(gameObject);
     }
 
 }

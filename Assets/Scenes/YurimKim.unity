@@ -2163,6 +2163,14 @@ PrefabInstance:
       propertyPath: fieldOfView
       value: 
       objectReference: {fileID: 1033851472}
+    - target: {fileID: 5096626892557838433, guid: b15e4d0d47601b44885defb10d377c0e, type: 3}
+      propertyPath: redGunNumber
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 5096626892557838433, guid: b15e4d0d47601b44885defb10d377c0e, type: 3}
+      propertyPath: blueGunNumber
+      value: 99
+      objectReference: {fileID: 0}
     - target: {fileID: 7553293588983531643, guid: b15e4d0d47601b44885defb10d377c0e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.8

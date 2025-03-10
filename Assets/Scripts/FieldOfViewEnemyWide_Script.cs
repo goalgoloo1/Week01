@@ -87,4 +87,14 @@ public class FieldOfViewEnemyWide_Script : MonoBehaviour
     {
         startingAngle = UtilsClass.GetAngleFromVectorFloat(_aimDirection) - fov / 2f;
     }
+
+    public void FoVTurnOnOff(bool _bool)
+    {
+        this.gameObject.SetActive(_bool);
+    }
+
+    public void DestroyFOV()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -321,14 +321,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3795de1fb1b134a41a7698380fc82a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movespeed: 0
-  hp: 0
+  movespeed: 5
+  hp: 2
   currentState: 0
   gun: {fileID: 6462777158864582031}
   currentGunType: 0
-  firePoint: {fileID: 0}
-  blueGunNumber: 5
-  redGunNumber: 5
+  firePoint: {fileID: 5039706649031130900}
+  blueGunNumber: 10
+  redGunNumber: 10
   canvas: {fileID: 0}
   gameManager: {fileID: 0}
   deathParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
