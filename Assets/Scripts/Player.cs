@@ -229,7 +229,6 @@ public class Player : Character
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
 
             // 플레이어 위치, 각도와 Field of View 위치, 각도 동기화
-            float currentAngle = transform.eulerAngles.z;
             fieldOfView.SetAimDirection(UtilsClass.GetVectorFromAngle(angle + 90));
             fieldOfView.SetOrigin(this.transform.position);
 

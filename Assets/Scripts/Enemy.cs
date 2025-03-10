@@ -2,13 +2,27 @@ using UnityEngine;
 using UnityEngine.AI;
 using CodeMonkey.Utils;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviour
 {
     // 플레이어의 Transform
-    public Transform player; 
+    public Transform player;
 
-    // 시야각 가져오기
+    // 뒤에서 암살
+    [SerializeField] GameObject PressE_UI;
+    public float assassinRange = 1f; // 공격 범위
+    public float rotationThresholdMin = 130f;
+    public float rotationThresholdMax = 180f;
+
+    // 실제 raycast 시야각
+    [SerializeField] private LayerMask layerMask;
+    public float wideFov;
+    public float wideViewDistance;
+    public float longFov;
+    public float longViewDistance;
+
+    // 시야각 UI 가져오기
     [SerializeField] private FieldOfViewEnemyWide_Script fieldOfViewEnemyWide;
     [SerializeField] private FieldOfViewEnemyLong_Script fieldOfViewEnemyLong;
     public GameObject fieldOfViewEnemyPrefabWide;
@@ -51,6 +65,9 @@ public class Enemy : MonoBehaviour
     {
         FOVUpdate();
 
+        CheckFieldOfView(wideFov, wideViewDistance);
+        CheckFieldOfView(longFov, longViewDistance);
+
         // 시야와 공격 범위 체크
         isPlayerInSightRange = Physics.CheckSphere(transform.position, sightRange);
         isPlayerInAttackRange = Physics.CheckSphere(transform.position, attackRange);
@@ -60,6 +77,34 @@ public class Enemy : MonoBehaviour
         // if (!isPlayerInSightRange && !isPlayerInAttackRange) Patroling();
         if (isPlayerInSightRange && !isPlayerInAttackRange) ChasePlayer();
         if (isPlayerInSightRange && isPlayerInAttackRange) AttackPlayer();
+
+        // 암살시 적과 플레이어 거리 확인
+        Vector3 enemyPosition = transform.position;
+        Vector3 directionToPlayer = player.position - enemyPosition;
+        float distance = directionToPlayer.magnitude;
+
+        // 암살시 플레이어가 공격 범위 내에 있는지 확인
+        if (distance < assassinRange)
+        {
+            float angleToPlayer = Vector3.SignedAngle(transform.up, directionToPlayer.normalized, Vector3.forward);
+            float angleDifference = Mathf.Abs(angleToPlayer);
+
+            // 각도 차이가 지정한 범위에 있는지 확인
+            if (angleDifference >= rotationThresholdMin && angleDifference <= rotationThresholdMax)
+            {
+                ShowEKeyUI(true);
+
+                // E 키를 눌렀는지 확인
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    KillEnemy();
+                }
+            }
+        }
+        else
+        {
+            ShowEKeyUI(false);
+        }
     }
 
     public void FOVStart()
@@ -86,11 +131,50 @@ public class Enemy : MonoBehaviour
     public void FOVUpdate()
     {
         // 적의 현재 각도를 가져와 시야각을 업데이트
-        float currentAngle = transform.eulerAngles.z; // 왜 235, 120을 더해야 하는지는 모르겠음...ㅠㅠㅠ
-        fieldOfViewEnemyWide.SetAimDirection(UtilsClass.GetVectorFromAngle(currentAngle + 235));
+        float currentAngle = transform.eulerAngles.z;
+
+        // 시야각의 시작과 끝 각도 계산
+        float wideFOVStartAngle = currentAngle - wideFov / 2; // 넓은 시야각 시작
+        float wideFOVEndAngle = currentAngle + wideFov / 2;   // 넓은 시야각 끝
+        float longFOVStartAngle = currentAngle - longFov / 2;  // 좁은 시야각 시작
+        float longFOVEndAngle = currentAngle + longFov / 2;    // 좁은 시야각 끝
+
+        // Wide FOV 설정
+        fieldOfViewEnemyWide.SetAimDirection(UtilsClass.GetVectorFromAngle(wideFOVStartAngle + 90 + wideFov * 2 - wideFov / 2)); // 각도 보정 추가
         fieldOfViewEnemyWide.SetOrigin(this.transform.position);
-        fieldOfViewEnemyLong.SetAimDirection(UtilsClass.GetVectorFromAngle(currentAngle + 120));
+
+        // Long FOV 설정
+        fieldOfViewEnemyLong.SetAimDirection(UtilsClass.GetVectorFromAngle(longFOVStartAngle + 90 + longFov * 2 - longFov / 2)); // 각도 보정 추가
         fieldOfViewEnemyLong.SetOrigin(this.transform.position);
+    }
+
+
+
+
+    private void CheckFieldOfView(float _fov, float _viewDistance)
+    {
+        Vector3 origin = transform.position;
+        float startingAngle = transform.eulerAngles.z - _fov / 2f + 90;
+
+        int rayCount = 200;
+        float angleIncrease = _fov / rayCount;
+
+        for (int i = 0; i <= rayCount; i++)
+        {
+            float angle = startingAngle + angleIncrease * i;
+            RaycastHit2D hit = Physics2D.Raycast(origin, UtilsClass.GetVectorFromAngle(angle), _viewDistance, layerMask);
+            if (hit.collider != null && hit.collider.CompareTag("Player"))
+            {
+                Debug.Log("플레이어를 발견했습니다!");
+                // 플레이어를 발견했을 때의 로직 추가
+                // 플레이어를 발견했을 때의 로직 추가
+
+                // 플레이어를 발견했을 때의 로직 추가
+                // 플레이어를 발견했을 때의 로직 추가
+            }
+            // Gizmos를 통해 Ray 시각화
+            Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * _viewDistance, Color.red);
+        }
     }
 
     void ZoneMove()
@@ -114,6 +198,23 @@ public class Enemy : MonoBehaviour
                 currentZoneMovePointIndex = 0; // 마지막 포인트에 도달하면 처음으로 돌아감
             }
         }
+    }
+
+    void ShowEKeyUI(bool _isPlayerClose)
+    {
+        if (_isPlayerClose == true)
+        {
+            PressE_UI.SetActive(true);
+        }
+        else
+        {
+            PressE_UI.SetActive(false);
+        }
+    }
+
+    void KillEnemy()
+    {
+        gameObject.SetActive(false);
     }
 
 

@@ -77,7 +77,6 @@ public class FieldOfViewEnemyLong_Script : MonoBehaviour
         mesh.RecalculateBounds();
     }
 
-
     public void SetOrigin(Vector3 _origin)
     {
         this.origin = _origin;
