@@ -1536,28 +1536,26 @@ MonoBehaviour:
   rotationThresholdMax: 180
   layerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 2048
   wideFov: 140
   wideViewDistance: 5
   longFov: 25
   longViewDistance: 15
   fieldOfViewEnemyWide: {fileID: 0}
   fieldOfViewEnemyLong: {fileID: 0}
+  fieldOfViewEnemyWideColor: {fileID: 0}
+  fieldOfViewEnemyLongColor: {fileID: 0}
   fieldOfViewEnemyPrefabWide: {fileID: 8178410400162374663, guid: d9aca60477b04754dac804af3e7f1988, type: 3}
   fieldOfViewEnemyPrefabLong: {fileID: 8178410400162374663, guid: 5520b90de10a5f947a5318b0af3e882f, type: 3}
   agent: {fileID: 0}
+  currentState: 0
   zoneMovePoints: []
   isWalkingToZoneMovePoint: 0
   walkPoint: {x: 0, y: 0, z: 0}
   isWalkPointSet: 0
-  walkPointRange: 8
   timeBetweenAttacks: 0
-  sightRange: 5
-  attackRange: 3
-  sightAngle: 0
-  attackAngle: 0
-  isPlayerInSightRange: 0
-  isPlayerInAttackRange: 0
+  searchingWalkPointRange: 4
+  searchingTime: 20
 --- !u!58 &6447962627192838135
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1574,7 +1572,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1984
+    m_Bits: 704
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -1640,7 +1638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c7f4db162bab4443818dd13bed4b1dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angularSpeed: 150
+  angularSpeed: 120
 --- !u!1 &7619276492862499141
 GameObject:
   m_ObjectHideFlags: 0

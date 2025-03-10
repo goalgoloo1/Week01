@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using CodeMonkey.Utils;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviour
 {
     // 플레이어의 Transform
     public Transform player;
+    private Vector3 lastPlayerPosition; // 마지막으로 본 플레이어 위치
 
     // 뒤에서 암살
     [SerializeField] GameObject PressE_UI;
@@ -25,11 +25,20 @@ public class Enemy : MonoBehaviour
     // 시야각 UI 가져오기
     [SerializeField] private FieldOfViewEnemyWide_Script fieldOfViewEnemyWide;
     [SerializeField] private FieldOfViewEnemyLong_Script fieldOfViewEnemyLong;
+    [SerializeField] private FoVEnemyColor_Script fieldOfViewEnemyWideColor;
+    [SerializeField] private FoVEnemyColor_Script fieldOfViewEnemyLongColor;
     public GameObject fieldOfViewEnemyPrefabWide;
     public GameObject fieldOfViewEnemyPrefabLong;
 
     // 인공지능
     public NavMeshAgent agent;
+    public enum EnemyState
+    {
+        Patrolling,
+        Chasing,
+        Searching
+    }
+    public EnemyState currentState = EnemyState.Patrolling;
 
     // ZoneMove
     public List<Vector3> zoneMovePoints;
@@ -37,14 +46,20 @@ public class Enemy : MonoBehaviour
     public bool isWalkingToZoneMovePoint;
     // Patroling
     public Vector3 walkPoint;
-    public bool isWalkPointSet;
-    public float walkPointRange;
+    bool isWalkPointSet;
     // Attacking
     public float timeBetweenAttacks;
     bool isAlreadyAttacked;
-    // States
-    public float sightRange, attackRange, sightAngle, attackAngle;
-    public bool isPlayerInSightRange, isPlayerInAttackRange;
+    // Searching
+    public float searchingWalkPointRange;
+    public float searchingTime;
+
+
+
+
+
+
+
 
     private void Awake()
     {
@@ -68,15 +83,31 @@ public class Enemy : MonoBehaviour
         CheckFieldOfView(wideFov, wideViewDistance);
         CheckFieldOfView(longFov, longViewDistance);
 
-        // 시야와 공격 범위 체크
-        isPlayerInSightRange = Physics.CheckSphere(transform.position, sightRange);
-        isPlayerInAttackRange = Physics.CheckSphere(transform.position, attackRange);
 
         // AI 3가지 상황 체크
-        if (!isWalkingToZoneMovePoint) ZoneMove();
+        switch (currentState)
+        {
+            case EnemyState.Patrolling:
+                ZoneMove();
+                fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.white);
+                fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.white);
+                break;
+            case EnemyState.Chasing:
+                ChasePlayer();
+                fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.red);
+                fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.red);
+                break;
+            case EnemyState.Searching:
+                Searching();
+                fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.yellow);
+                fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.yellow);
+                break;
+        }
+
+        // if (!isWalkingToZoneMovePoint) ZoneMove();
         // if (!isPlayerInSightRange && !isPlayerInAttackRange) Patroling();
-        if (isPlayerInSightRange && !isPlayerInAttackRange) ChasePlayer();
-        if (isPlayerInSightRange && isPlayerInAttackRange) AttackPlayer();
+        // if (isPlayerInSightRange && !isPlayerInAttackRange) ChasePlayer();
+        // if (isPlayerInSightRange && isPlayerInAttackRange) AttackPlayer();
 
         // 암살시 적과 플레이어 거리 확인
         Vector3 enemyPosition = transform.position;
@@ -112,12 +143,16 @@ public class Enemy : MonoBehaviour
         // Field of View Wide 오브젝트 생성
         GameObject fovObjectWide = Instantiate(fieldOfViewEnemyPrefabWide, Vector2.zero, Quaternion.identity);
         fieldOfViewEnemyWide = fovObjectWide.GetComponent<FieldOfViewEnemyWide_Script>();
+        fieldOfViewEnemyWideColor = fovObjectWide.GetComponent<FoVEnemyColor_Script>();
         fieldOfViewEnemyWide.enemy = this; // Field of View에 자신을 참조하게 설정
+        fieldOfViewEnemyWideColor.enemy = this;
 
         // Field of View Long 오브젝트 생성
         GameObject fovObjectLong = Instantiate(fieldOfViewEnemyPrefabLong, Vector2.zero, Quaternion.identity);
         fieldOfViewEnemyLong = fovObjectLong.GetComponent<FieldOfViewEnemyLong_Script>();
+        fieldOfViewEnemyLongColor = fovObjectLong.GetComponent<FoVEnemyColor_Script>();
         fieldOfViewEnemyLong.enemy = this; // Field of View에 자신을 참조하게 설정
+        fieldOfViewEnemyLongColor.enemy = this;
 
         // 시야각의 시작 위치와 회전 설정
         fieldOfViewEnemyWide.SetOrigin(transform.position);
@@ -148,30 +183,36 @@ public class Enemy : MonoBehaviour
         fieldOfViewEnemyLong.SetOrigin(this.transform.position);
     }
 
-
-
-
     private void CheckFieldOfView(float _fov, float _viewDistance)
     {
         Vector3 origin = transform.position;
         float startingAngle = transform.eulerAngles.z - _fov / 2f + 90;
 
-        int rayCount = 200;
+        int rayCount = 50;
         float angleIncrease = _fov / rayCount;
 
         for (int i = 0; i <= rayCount; i++)
         {
             float angle = startingAngle + angleIncrease * i;
             RaycastHit2D hit = Physics2D.Raycast(origin, UtilsClass.GetVectorFromAngle(angle), _viewDistance, layerMask);
-            if (hit.collider != null && hit.collider.CompareTag("Player"))
+            if (hit.collider != null)
             {
-                Debug.Log("플레이어를 발견했습니다!");
-                // 플레이어를 발견했을 때의 로직 추가
-                // 플레이어를 발견했을 때의 로직 추가
-
-                // 플레이어를 발견했을 때의 로직 추가
-                // 플레이어를 발견했을 때의 로직 추가
+                if (hit.collider.CompareTag("Player"))
+                {
+                    Debug.Log("플레이어를 발견했습니다!");
+                    lastPlayerPosition = hit.collider.transform.position; // 마지막으로 본 플레이어 위치 저장
+                    currentState = EnemyState.Chasing; // 상태를 Chasing으로 변경
+                }
+                else
+                {
+                    Debug.Log("플레이어가 아닌 오브젝트에 닿았습니다." + hit.collider.name);
+                }
             }
+            else
+            {
+                Debug.Log("어떤 오브젝트에도 닿지 않았습니다.");
+            }
+
             // Gizmos를 통해 Ray 시각화
             Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * _viewDistance, Color.red);
         }
@@ -217,8 +258,25 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void ChasePlayer()
+    {
+        agent.SetDestination(lastPlayerPosition); // 마지막으로 본 위치로 이동
 
-    void Patroling()
+        // 마지막 위치에 도착했는지 확인
+        if (Vector3.Distance(transform.position, lastPlayerPosition) < 1f)
+        {
+            currentState = EnemyState.Searching;
+            Invoke(nameof(ReturnToPatrolling), searchingTime); // searchingTime 대기 후 패트롤 상태로 돌아가기
+        }
+    }
+
+    private void ReturnToPatrolling()
+    {
+        currentState = EnemyState.Patrolling; // 다시 패트롤 상태로 변경
+    }
+
+
+    void Searching()
     {
         if (!isWalkPointSet)
         {
@@ -239,8 +297,8 @@ public class Enemy : MonoBehaviour
     void SearchWalkPoint()
     {
         // 범위 내 랜덤한 포인트 지정
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
-        float randomY = Random.Range(-walkPointRange, walkPointRange);
+        float randomX = Random.Range(-searchingWalkPointRange, searchingWalkPointRange);
+        float randomY = Random.Range(-searchingWalkPointRange, searchingWalkPointRange);
 
         Vector3 randomPoint = new Vector3(transform.position.x + randomX, transform.position.y + randomY, 0);
 
@@ -252,11 +310,6 @@ public class Enemy : MonoBehaviour
             walkPoint = hit.position; // 찾은 위치를 walkPoint로 설정
             isWalkPointSet = true;
         }
-    }
-
-    void ChasePlayer()
-    {
-        agent.SetDestination(player.position);
     }
 
     void AttackPlayer()
@@ -281,17 +334,6 @@ public class Enemy : MonoBehaviour
     void ResetAttack()
     {
         isAlreadyAttacked = false;
-    }
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, walkPointRange);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);  
     }
 
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 566483036620117666}
   - component: {fileID: 506999078264823589}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: AidKit_Indicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9096866029802757805}
   - component: {fileID: 1080078817597354353}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6056514069253111752}
   - component: {fileID: 5317265005918880251}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Body (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 5096626892557838433}
   - component: {fileID: 8886664948003956292}
   - component: {fileID: 6989784942165111701}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -327,6 +327,8 @@ MonoBehaviour:
   gun: {fileID: 6462777158864582031}
   currentGunType: 0
   firePoint: {fileID: 0}
+  blueGunNumber: 5
+  redGunNumber: 5
   canvas: {fileID: 0}
   gameManager: {fileID: 0}
   deathParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
@@ -384,7 +386,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1984
+    m_Bits: 1728
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -501,7 +503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1762477498854751291}
   - component: {fileID: 7231032355031579682}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Triangle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -588,7 +590,7 @@ GameObject:
   m_Component:
   - component: {fileID: 126656161561931396}
   - component: {fileID: 9056124138200804656}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Body (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -675,7 +677,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5689697813728063652}
   - component: {fileID: 3499766692035459754}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cross (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -762,7 +764,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7109768088085513909}
   - component: {fileID: 1408038646842705046}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Eye (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -849,7 +851,7 @@ GameObject:
   m_Component:
   - component: {fileID: 134078375203818006}
   - component: {fileID: 1696234150893780315}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Hat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -937,7 +939,7 @@ GameObject:
   - component: {fileID: 6170630274592810428}
   - component: {fileID: 5703358441604952046}
   - component: {fileID: 3760193554806696673}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1038,7 +1040,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3113447339142891631}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1073,7 +1075,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4615743757666956957}
   - component: {fileID: 1396118355518123939}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Eye (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1160,7 +1162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6376094613094509000}
   - component: {fileID: 7285292465537569676}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1247,7 +1249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9003955581385433035}
   - component: {fileID: 6232952422436721062}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Triangle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1334,7 +1336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3033148695800832438}
   - component: {fileID: 3177027307724306239}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1420,7 +1422,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5039706649031130900}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GunPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1452,7 +1454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7148400151186202614}
   - component: {fileID: 3191405341738640149}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cross (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
