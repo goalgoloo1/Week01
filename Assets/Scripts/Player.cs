@@ -1,8 +1,7 @@
 using UnityEngine;
 using CodeMonkey.Utils;
-using static Enemy;
 
-public class Player : Character
+public class Player : MonoBehaviour
 {
     public enum PlayerState 
     {
@@ -18,6 +17,11 @@ public class Player : Character
     }
 
     public PlayerState currentState = PlayerState.Walk;
+
+    public float movespeed;
+    public int hp;
+    public int maxHp;
+    protected float runMultiply = 1;
 
     // 총
     public GameObject gun;
@@ -44,13 +48,11 @@ public class Player : Character
     private float lastSoundwaveTime = 0f; // 마지막 음파 생성 시간
     private float soundwaveInterval = 0.4f; // 음파 생성 간격 (1초)
 
-    GameObject targetPatient;
-
-    public bool isHaveAdkit = false;
+    public GameObject targetPatient;
+    public bool isCanSave = false;
 
     public float stamina;
     public float holdKeyTime = 0f;
-    public bool isCanSave = false;
 
 
 
@@ -60,20 +62,24 @@ public class Player : Character
     {
         currentGunType = GunType.BlueGun; // 초기 총 종류 설정
 
-        movespeed = 5;
-        hp = 2;
+        hp = maxHp;
         stamina = 99999f;
         runMultiply = 1;
 
         gameManager = GameObject.FindFirstObjectByType<GameManager>();
         canvas = GameObject.FindFirstObjectByType<Canvas_Script>();
         playerRb = GetComponent<Rigidbody2D>();
+
+        canvas.UpdateGunNumber(canvas.blueGunUINum, blueGunNumber);
+        canvas.UpdateGunNumber(canvas.redGunUINum, redGunNumber);
     }
     void Update()
     {
         // 마우스 휠 스크롤 입력 처리
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
         CheckMouseWheel(scrollInput);
+
+        SetHealth();
 
 
         if (!gameManager.isgameover)
@@ -181,14 +187,13 @@ public class Player : Character
 
                     if (holdKeyTime >= 1f) 
                     {
-                        gameManager.score += 1;
+                        // gameManager.score += 1;
                         TriggerPatientHeal();
                         Destroy(targetPatient);
                         holdKeyTime = 0;
                         isCanSave = false;
+                        gameManager.isGameClear = true;
                         currentState = PlayerState.Walk;
-                        transform.Find("AidKit_Indicator").gameObject.SetActive(false);
-                        isHaveAdkit = false;
                     }
                 }
                 else 
@@ -232,6 +237,7 @@ public class Player : Character
             }
 
             // 자힐
+            /*
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (transform.Find("AidKit_Indicator").gameObject.activeSelf && hp < 2)
@@ -242,6 +248,7 @@ public class Player : Character
                     isHaveAdkit = false;
                 }
             }
+            */
 
             //// 자해(테스트용)
             //if (Input.GetKeyDown(KeyCode.Z))
@@ -259,6 +266,27 @@ public class Player : Character
                     Destroy(gameObject);
                 }
             }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 죽으면 파티클 생성
+        Instantiate(deathParticle, transform.position, transform.rotation);
+    }
+
+    // 체력을 설정하는 메서드
+    public void SetHealth()
+    {
+        // 체력이 최대 체력을 초과하지 않도록 제한
+        if (hp > maxHp)
+        {
+            hp = maxHp;
+        }
+        // 체력이 0 이하로 떨어지지 않도록 설정
+        if (hp < 0)
+        {
+            hp = 0; 
         }
     }
     void TriggerDeath() 
@@ -361,7 +389,7 @@ public class Player : Character
         }
 
         //환자 살리기
-        if (isHaveAdkit && _collision.gameObject.CompareTag("Patient"))
+        if (_collision.gameObject.CompareTag("Patient"))
         {
             isCanSave = true;
             targetPatient = _collision.gameObject;

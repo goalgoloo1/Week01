@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     public void RestartGame()
     {
         Debug.Log("다시하기 고");
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Main 2");
     }
 
 

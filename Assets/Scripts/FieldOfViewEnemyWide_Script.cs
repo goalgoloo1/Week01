@@ -27,7 +27,7 @@ public class FieldOfViewEnemyWide_Script : MonoBehaviour
     // 흔들림 방지를 위해 LateUpdate로 시야각 업데이트
     private void LateUpdate()
     {
-        int rayCount = 200;
+        int rayCount = 50;
         float angle = startingAngle;
         float angleIncrease = fov / rayCount;
 

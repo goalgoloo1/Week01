@@ -551,7 +551,7 @@ GameObject:
   - component: {fileID: 1622661102907994039}
   m_Layer: 3
   m_Name: Vase
-  m_TagString: Untagged
+  m_TagString: Field Of View Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

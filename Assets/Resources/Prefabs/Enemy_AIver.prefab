@@ -1531,6 +1531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  playerPlayer: {fileID: 0}
   hp: 10
   stunDuration: 3.5
   bulletPrefab: {fileID: 5029610912062255231, guid: 6eb1591d4b32d2343aa5c90df3766343, type: 3}
@@ -1538,8 +1539,9 @@ MonoBehaviour:
   gunPosition: {fileID: 3862364297735622895}
   BuleDamagedParticle: {fileID: 5347658223564051670, guid: 2c0dbfee8803200499f23c7b45b344d4, type: 3}
   RedDamagedParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
+  HealingParticle: {fileID: 5347658223564051670, guid: 5389b238fd9502440846dce26c9a3c1f, type: 3}
   PressE_UI: {fileID: 4039250041235736191}
-  assassinRange: 2.5
+  assassinRange: 3.5
   rotationThresholdMin: 130
   rotationThresholdMax: 180
   layerMask:

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EmergencyKit : MonoBehaviour
 {
+    /*
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player") && !collision.gameObject.GetComponent<Player>().isHaveAdkit)
@@ -13,4 +14,5 @@ public class EmergencyKit : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    */
 }

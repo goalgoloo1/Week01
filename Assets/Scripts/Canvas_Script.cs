@@ -5,7 +5,7 @@ public class Canvas_Script : MonoBehaviour
 {
     public GameObject lowHp_UI;
     public GameObject gameOver;
-    public GameObject score;
+    public GameObject timer;
     public GameObject staminaBar;
     public GameObject blueGunUI;
     public GameObject redGunUI;
@@ -19,10 +19,6 @@ public class Canvas_Script : MonoBehaviour
         redGunUINum = redGunUI.transform.Find("RedGunText").GetComponent<TextMeshProUGUI>();
     }
 
-    void Update()
-    {
-        
-    }
 
     public void TurnOff(GameObject _gameObject)
     {

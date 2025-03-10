@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     // 플레이어의 Transform
     [Header("Player transform")]
     public Transform player;
+    public Player playerPlayer;
     private Vector3 lastPlayerPosition; // 마지막으로 본 플레이어 위치
 
     [Header("Enemy Hp")]
@@ -24,6 +25,7 @@ public class Enemy : MonoBehaviour
     public Transform gunPosition;
     public ParticleSystem BuleDamagedParticle;
     public ParticleSystem RedDamagedParticle;
+    public ParticleSystem HealingParticle;
 
     // 뒤에서 암살
     [Header("Assassination")]
@@ -98,6 +100,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerPlayer = GameObject.FindFirstObjectByType<Player>();
         agentRotate = GetComponent<AgentRotateSmooth2d>();
         agent = GetComponent<NavMeshAgent>();
     }
@@ -212,6 +215,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
 
     public void DamagedBullet(string _color)
     {
@@ -375,10 +379,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void KillEnemy()
-    {
-        gameObject.SetActive(false);
-    }
 
     private void ChasePlayer()
     {
@@ -531,6 +531,26 @@ public class Enemy : MonoBehaviour
         Invoke("RecoverFromStun", stunDuration); // 일정 시간 후 Stun 해제
     }
 
+    public void NavMeshEnemyOnOff(Transform player, float deleteDistance)
+    {
+        float distance = Vector3.Distance(player.position, this.transform.position);
+
+        if (distance > deleteDistance)
+        {
+            // 적 비활성화
+            gameObject.SetActive(false);
+            fieldOfViewEnemyPrefabWide.SetActive(false);
+            fieldOfViewEnemyPrefabLong.SetActive(false);
+        }
+        else
+        {
+            // 적 활성화
+            gameObject.SetActive(true);
+            fieldOfViewEnemyPrefabWide.SetActive(true);
+            fieldOfViewEnemyPrefabLong.SetActive(true);
+        }
+    }
+
     private void RecoverFromStun()
     {
         isStunned = false;
@@ -563,7 +583,9 @@ public class Enemy : MonoBehaviour
                 // E 키를 눌렀는지 확인
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    KillEnemy();
+                    EnemyDie();
+                    playerPlayer.hp = playerPlayer.maxHp;
+                    Instantiate(HealingParticle, player.transform.position, player.transform.rotation);
                 }
             }
         }
@@ -577,6 +599,7 @@ public class Enemy : MonoBehaviour
     {
         fieldOfViewEnemyWide.DestroyFOV();
         fieldOfViewEnemyLong.DestroyFOV();
+        Instantiate(RedDamagedParticle, transform.position, transform.rotation);
         Destroy(gameObject);
     }
 
