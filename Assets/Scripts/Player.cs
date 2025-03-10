@@ -89,11 +89,11 @@ public class Player : Character
             switch (currentState) 
             {
                 case PlayerState.Walk:
-                    runMultiply = 1;
+                    runMultiply = 1f;
                     soundwaveInterval = 0.4f;
                     break;
                 case PlayerState.Run:
-                    runMultiply = 3f;
+                    runMultiply = 2f;
                     soundwaveInterval = 0.15f;
                     break;
                 case PlayerState.Save:

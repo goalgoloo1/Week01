@@ -2,11 +2,15 @@ using UnityEngine;
 
 public class Soundwave_Script : MonoBehaviour
 {
+    [Header("Soundwave")]
     public float increaseSpeed = 0.5f;
     public float decreaseSpeed = 0.1f;
     public float changeTime = 1f;
     public bool isIncreasing = true; // 상태를 명확하게 관리
     private Vector3 soundwaveScale;
+
+    [Header("Player Transform")]
+    public Transform playerTransform;
 
     private void Start()
     {
@@ -48,4 +52,23 @@ public class Soundwave_Script : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("충돌 감지: " + other.name); // 어떤 오브젝트와 충돌했는지 로그 출력
+
+        // 적이 음파에 닿았을 때
+        if (other.CompareTag("Enemy"))
+        {
+            Debug.Log("들린다들린다");
+
+            // 적 정보 가져온 후, 해당 적이 Chasing 상태로 변함
+            Enemy enemy = other.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.currentState = Enemy.EnemyState.Chasing;
+            }
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using CodeMonkey.Utils;
 using System.Collections.Generic;
 using System.Collections;
+using NavMeshPlus.Extensions;
 
 public class Enemy : MonoBehaviour
 {
@@ -43,6 +44,8 @@ public class Enemy : MonoBehaviour
     // 인공지능
     [Header("Enemy AI")]
     public NavMeshAgent agent;
+    private AgentRotateSmooth2d agentRotate;
+
     public enum EnemyState
     {
         Patrolling,
@@ -51,20 +54,30 @@ public class Enemy : MonoBehaviour
     }
     public EnemyState currentState = EnemyState.Patrolling;
 
+    [Header("Enemy Speed")]
+    public float normalLinearSpeed;
+    public float normalAngularSpeed;
+    public float fastLinearSpeed;
+    public float fastAngularSpeed;
+
     // ZoneMove
+    [Header("AI: ZoneMove")]
     public List<Vector3> zoneMovePoints;
     private int currentZoneMovePointIndex;
     public bool isWalkingToZoneMovePoint;
-    // Patroling
-    private Vector3 walkPoint;
-    private bool isWalkPointSet;
     // Attacking
-    public float attackRange = 10f;
+    [Header("AI: Attacking")]
     public float shootingInterval = 1f;
+    public float attackRange;
     private bool isShooting = false;
     // Searching
+    [Header("AI: Searching")]
     public float searchingWalkPointRange;
     public float searchingTime;
+    // Patroling
+    [Header("AI: Patroling")]
+    private Vector3 walkPoint;
+    private bool isWalkPointSet;
 
 
 
@@ -76,6 +89,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        agentRotate = GetComponent<AgentRotateSmooth2d>();
         agent = GetComponent<NavMeshAgent>();
     }
 
@@ -101,16 +115,19 @@ public class Enemy : MonoBehaviour
         {
             case EnemyState.Patrolling:
                 ZoneMove();
+                ChangeSpeed(normalLinearSpeed, normalAngularSpeed);
                 fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.white);
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.white);
                 break;
             case EnemyState.Chasing:
                 AttackPlayer(wideFov, wideViewDistance, longFov, longViewDistance);
+                ChangeSpeed(fastLinearSpeed, fastAngularSpeed);
                 fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.red);
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.red);
                 break;
             case EnemyState.Searching:
                 Searching();
+                ChangeSpeed(fastLinearSpeed, fastAngularSpeed);
                 fieldOfViewEnemyWideColor.ChangeFoVColor(fieldOfViewEnemyWideColor.yellow);
                 fieldOfViewEnemyLongColor.ChangeFoVColor(fieldOfViewEnemyLongColor.yellow);
                 break;
@@ -190,6 +207,12 @@ public class Enemy : MonoBehaviour
         fieldOfViewEnemyLong.SetOrigin(this.transform.position);
     }
 
+    void ChangeSpeed(float _linearSpeed, float _angularSpeed)
+    {
+        agent.speed = _linearSpeed;
+        agentRotate.SetSmoothAngularSpeed(_angularSpeed);
+    }
+
     private void CheckFieldOfView(float _fov, float _viewDistance)
     {
         Vector3 origin = transform.position;
@@ -202,6 +225,8 @@ public class Enemy : MonoBehaviour
         {
             float angle = startingAngle + angleIncrease * i;
             RaycastHit2D hit = Physics2D.Raycast(origin, UtilsClass.GetVectorFromAngle(angle), _viewDistance, layerMask);
+
+            // Raycast 결과 처리
             if (hit.collider != null)
             {
                 if (hit.collider.CompareTag("Player"))
@@ -210,14 +235,23 @@ public class Enemy : MonoBehaviour
                     lastPlayerPosition = hit.collider.transform.position; // 마지막으로 본 플레이어 위치 저장
                     currentState = EnemyState.Chasing; // 상태를 Chasing으로 변경
                 }
+                else if (hit.collider.CompareTag("Field Of View Object"))
+                {
+                    // Field of View Object에 가로막힘
+                    Debug.Log("Field of View Object에 의해 가로막힘");
+                    // 장애물과의 거리로 Ray 길이 조정
+                    Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * hit.distance, Color.red);
+                }
                 else
                 {
-                    Debug.Log("플레이어가 아닌 오브젝트에 닿았습니다." + hit.collider.name);
+                    Debug.Log("플레이어가 아닌 오브젝트에 닿았습니다: " + hit.collider.name);
                 }
             }
-
-            // Gizmos를 통해 Ray 시각화
-            Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * _viewDistance, Color.red);
+            else
+            {
+                // 장애물에 부딪히지 않으면 원래 거리로 Ray그리기
+                Debug.DrawRay(origin, UtilsClass.GetVectorFromAngle(angle) * _viewDistance, Color.red);
+            }
         }
     }
 

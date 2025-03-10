@@ -10,6 +10,7 @@ TagManager:
   - Patient
   - Bullet
   - Water
+  - Field Of View Object
   layers:
   - Default
   - TransparentFX
