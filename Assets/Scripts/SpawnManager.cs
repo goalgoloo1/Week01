@@ -1,139 +1,148 @@
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using System.Collections;
+using UnityEngine.InputSystem.LowLevel;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header("Prefabs")]
-    public GameObject enemyPrefab;
-    public GameObject emergencyKitPrefab;
-    public GameObject redZonePrefab;
-    public GameObject redZoneBoundsPrefab;
-    public GameObject patientPrefab;
+    // 플레이어, 카메라
+    public GameObject player;
+    public GameObject mainCamera;
+    // UI
+    public GameObject mainCanvas;
+    //적
+    public GameObject enemy;
+    // 화살표
+    public GameObject arrowPrefab;
+    public float indicatorRange = 300f;
+    // 캠
+    private Camera cam;
+    // 환자
+    public GameObject patient;
+    // 구급킷
+    public GameObject AidKit;
+    public int score;
 
-    [Header("References")]
-    private GameObject _Player;
-    [Header("Spawn Settings")]
-    public float spawnRadius = 6f;
-    [Header("Map Settings")]
-    public float mapSizeX = 20f; 
-    public float mapSizeY = 10f;
-
-    GameManager gm;
-    GameObject player; 
+    private void Awake()
+    {
+        Screen.SetResolution(900, 900, false);
+    }
 
     void Start()
     {
-        _Player = Resources.Load<GameObject>("Prefabs/Player");
-        gm = GameObject.FindFirstObjectByType<GameManager>();
-
-        StartCoroutine(SpawnEnemies());
-        StartCoroutine(SpawnEmergencyKits());
-        StartCoroutine(SpawnDeadZones());
-        StartCoroutine(SpawnPatients());
-
-        player = GameObject.FindFirstObjectByType<Player>().gameObject;
-    }
-
-    // Enemy Spawning: 20 units away from Player
-    IEnumerator SpawnEnemies()
-    {
-        while (!gm.isgameover)
+        FindObject();
+        if (GetType() == typeof(SpawnManager))
         {
-            yield return new WaitForSeconds(3f);
-            if (gm.isgameover) break;
-            if (_Player != null)
-            {
-                Vector3 spawnPos = GetRandomPositionFarFromPlayer(20f);
-                Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
-            }
+            mainCamera = Instantiate(mainCamera);
+            mainCanvas = Instantiate(mainCanvas);
+            player = Instantiate(player);
+            //Instantiate(enemy);
         }
-        yield return 0;
+        cam = Camera.main;
     }
 
-    // Emergency Kit Spawning: Within 20 units of Player
-    IEnumerator SpawnEmergencyKits()
+    float cooltime = 5f;
+    float curcooltime = 0f;
+    void Update()
     {
-        while (!gm.isgameover)
+        UpdateArrowIndicators();
+        //if (GameObject.FindGameObjectsWithTag("Patient").Length == 0) 
+        //{
+        //    Vector2 RandomVector = new Vector2(Random.Range(-40f, 40f), Random.Range(-40f, 40f));
+        //    Instantiate(patient, RandomVector, Quaternion.Euler(Vector3.zero));
+        //}
+        //if (GameObject.FindGameObjectsWithTag("Emergency Kit").Length == 0)
+        //{
+        //    Vector2 RandomVector = new Vector2(Random.Range(-40f, 40f), Random.Range(-40f, 40f));
+        //    Instantiate(AidKit, RandomVector, Quaternion.Euler(Vector3.zero));
+        //}
+        curcooltime += Time.deltaTime;
+        if (curcooltime > cooltime) 
         {
-            yield return new WaitForSeconds(5f);
-            if (_Player != null)
-            {
-                Vector3 spawnPos = GetRandomPositionNearPlayer(20f);
-                Instantiate(emergencyKitPrefab, spawnPos, Quaternion.identity);
-            }
+            Vector2 RandomVector = new Vector2(Random.Range(-40f, 40f), Random.Range(-40f, 40f));
+            Instantiate(enemy, RandomVector, Quaternion.Euler(Vector3.zero));
+            curcooltime = 0;
         }
-        yield return 0;
-    }
-
-    // Dead Zone Spawning: Within 20 units of Player
-    IEnumerator SpawnDeadZones()
-    {
-        while (true)
+        mainCanvas.GetComponent<MainCanvas>().score.GetComponent<TextMeshProUGUI>().text = "점수 : " + score.ToString();
+        if (player.GetComponent<Player>().hp == 1) 
         {
-            yield return new WaitForSeconds(3f);
-            if (_Player != null)
-            {
-                Vector3 spawnPos = GetRandomPositionNearPlayer(15f);
-                GameObject redZoneBound = Instantiate(redZoneBoundsPrefab, spawnPos, Quaternion.identity);
-                GameObject redZone = Instantiate(redZonePrefab, spawnPos, Quaternion.identity);
-                redZone.GetComponent<RedZoneFire>().redZoneBound = redZoneBound;
-            }
+            mainCanvas.GetComponent<MainCanvas>().lowHp_UI.SetActive(true);
         }
     }
 
-    // Patient Spawning: After 1.5 seconds, then every 3 seconds
-    IEnumerator SpawnPatients()
+    public void FindObject()
     {
-        yield return new WaitForSeconds(1.5f);
-        while (!gm.isgameover)
-        {
-            yield return new WaitForSeconds(4f);
-            Vector3 spawnPos = GetRandomScreenPosition();
-            Instantiate(patientPrefab, spawnPos, Quaternion.identity);
-        }
-        yield return 0;
+        player = Resources.Load<GameObject>("Prefabs/PlayerPrefabs/Player");
+        if (!player) Debug.Log("플레이어 못찾음");
+        mainCamera = Resources.Load<GameObject>("Prefabs/Main_Camera");
+        if (!mainCamera) Debug.Log("카메라 못찾음");
+        enemy = Resources.Load<GameObject>("Prefabs/EnemyPrefabs/Enemy");
+        if (!enemy) Debug.Log("Enemy 못찾음");
+        mainCanvas = Resources.Load<GameObject>("Prefabs/UI/Canvas");
+        arrowPrefab = Resources.Load<GameObject>("Prefabs/arrowPrefab");
+        patient = Resources.Load<GameObject>("Prefabs/Patient");
+        AidKit = Resources.Load<GameObject>("Prefabs/EmergencyKit");
     }
 
-    // Get a random position at least 'minDistance' away from the player
-    Vector3 GetRandomPositionFarFromPlayer(float minDistance)
+    void UpdateArrowIndicators()
     {
-        Vector3 spawnPos;
-        do
+        // 환자 찾기
+        GameObject[] patients = GameObject.FindGameObjectsWithTag("Patient");
+        GameObject[] aidKits = GameObject.FindGameObjectsWithTag("Emergency Kit");
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        if (patients.Length == 0)
         {
-            spawnPos = new Vector3(
-                Random.Range(-mapSizeX, mapSizeX),
-                Random.Range(-mapSizeY, mapSizeY),
-                0);
-        } while (Vector3.Distance(spawnPos, _Player.transform.position) < minDistance);
-
-        return spawnPos;
-    }
-
-    // Get a random position within 'maxDistance' of the player
-    Vector3 GetRandomPositionNearPlayer(float maxDistance)
-    {
-        Vector2 randomCircle = Random.insideUnitCircle * maxDistance;
-        if (player)
-        {
-
-            float x = player.transform.position.x + randomCircle.x;
-            float y = player.transform.position.y + randomCircle.y;
-            x = Mathf.Clamp(x, -mapSizeX, mapSizeX);
-            y = Mathf.Clamp(y, -mapSizeY, mapSizeY);
-            return new Vector3(x, y, 0);
+            Debug.Log("환자 없음");
         }
         else 
         {
-            return new Vector3(randomCircle.x, randomCircle.y, 0);
-        } 
+            foreach (GameObject patient in patients)
+            {
+                CreateArrow(patient.transform);
+            }
+        }
+        if (aidKits.Length == 0)
+        {
+            Debug.Log("구상 없음");
+        }
+        else
+        {
+            foreach (GameObject aidKit in aidKits)
+            {
+                CreateArrow(aidKit.transform);
+            }
+        }
+        if (enemies.Length == 0)
+        {
+            Debug.Log("구상 없음");
+        }
+        else
+        {
+            foreach (GameObject enemy in enemies)
+            {
+                CreateArrow(enemy.transform);
+            }
+        }
     }
-
-    // Get a random position within the visible screen area
-    Vector3 GetRandomScreenPosition()
+    void CreateArrow(Transform target)
     {
-        return new Vector3(
-            Random.Range(-mapSizeX, mapSizeX),
-            Random.Range(-mapSizeY, mapSizeY),
-            0);
+        Vector3 targetpos = cam.WorldToViewportPoint(target.transform.position);
+        Transform arrow = target.Find(target.tag + "arrow");
+        // 화면 바깥에 있고, 자식에 화살표가 없으면
+        if ((targetpos.x < 0 || targetpos.x > 1 || targetpos.y < 0 || targetpos.y > 1) && !arrow)
+        {
+            Debug.Log("asdf");
+            // 화살표 생성
+            GameObject newArrow = Instantiate(arrowPrefab, target.transform);
+            // 화살표 이름
+            newArrow.name = target.tag + "arrow";
+        }
+        // 화면 안쪽이고 자식에 화살표가 있으면
+        else if ((targetpos.x > 0 && targetpos.x < 1 && targetpos.y > 0 && targetpos.y < 1) && arrow)
+        {
+            Debug.Log("zxcv");
+            Destroy(arrow.gameObject);
+        }
     }
 }

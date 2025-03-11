@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.8490566, g: 0.7597497, b: 0.6367924, a: 1}
   m_FlipX: 0
@@ -275,7 +275,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1797108121675986266}
   - component: {fileID: 547400430414453534}
-  - component: {fileID: 2469301463712036631}
+  - component: {fileID: -5451911362743288895}
   m_Layer: 0
   m_Name: Patient
   m_TagString: Patient
@@ -297,8 +297,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 624916812332281433}
-  - {fileID: 4528244891303469465}
   - {fileID: 1163915386125249971}
+  - {fileID: 4528244891303469465}
   - {fileID: 5836583651856265826}
   - {fileID: 4601948330377100196}
   m_Father: {fileID: 0}
@@ -340,27 +340,18 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 2.2701378, y: 1.0000054}
   m_Direction: 1
---- !u!114 &2469301463712036631
-MonoBehaviour:
+--- !u!210 &-5451911362743288895
+SortingGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2387849135948457452}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c5e22299b9acb641a801dbc608ea13a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentTime: 100
-  maxTime: 100
-  timerDecreaseAmount: 0.1
-  player: {fileID: 0}
-  showUIDistance: 100
-  PressE_UI: {fileID: 8364701143419649011}
-  fill: {fileID: 3275313136189582746}
-  issaving: 1
-  timerBar: {fileID: 4662033662084484406}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 2
+  m_SortAtRoot: 0
 --- !u!1 &2663394297003997230
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +427,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 0.745283, g: 0.24256852, b: 0.25865373, a: 1}
   m_FlipX: 0
@@ -598,7 +589,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 15
+  m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -685,7 +676,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 15
+  m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -1031,7 +1022,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7359963525199565649}
   - component: {fileID: 4571466820331451203}
-  - component: {fileID: 4662033662084484406}
   m_Layer: 5
   m_Name: TimerBar
   m_TagString: Untagged
@@ -1111,16 +1101,3 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4662033662084484406
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9183655713806674414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0002a03e0ae6f4e43a1d7a7833bedb5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timerSlider: {fileID: 4571466820331451203}
