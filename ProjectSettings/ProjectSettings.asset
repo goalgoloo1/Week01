@@ -652,7 +652,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -674,11 +680,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 2ed8aa27-74b2-47d0-bc6b-e83f61902698
+  cloudProjectId: 6e2840f8-7fd4-4bf5-bff4-a69d37590761
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Week1_HospitalGame
-  organizationId: goalgoloo1
+  organizationId: americasso99
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

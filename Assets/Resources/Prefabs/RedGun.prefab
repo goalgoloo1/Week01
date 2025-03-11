@@ -315,8 +315,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentGunAmmoColor: 1
   player: {fileID: 0}
+  canvas: {fileID: 0}
   GetYouParticle: {fileID: 5347658223564051670, guid: b6725a848bd655148b52a578116f2497, type: 3}
-  ammoPlusNum: 8
+  ammoPlusNum: 10
 --- !u!58 &5003268345029233467
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -7349,27 +7349,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
       propertyPath: zoneMovePoints.Array.data[1].x
-      value: 17
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
       propertyPath: zoneMovePoints.Array.data[1].y
-      value: 12
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
       propertyPath: zoneMovePoints.Array.data[2].x
-      value: -6
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
       propertyPath: zoneMovePoints.Array.data[2].y
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
-      propertyPath: zoneMovePoints.Array.data[3].x
       value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
+      propertyPath: zoneMovePoints.Array.data[3].x
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2225310158367825072, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
       propertyPath: zoneMovePoints.Array.data[3].y
-      value: 12
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3031123187932826014, guid: 00a3256360729ff4f932c756d2a2090b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -9437,6 +9437,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1487648664}
     - target: {fileID: 5096626892557838433, guid: b15e4d0d47601b44885defb10d377c0e, type: 3}
+      propertyPath: redGunNumber
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5096626892557838433, guid: b15e4d0d47601b44885defb10d377c0e, type: 3}
+      propertyPath: blueGunNumber
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5096626892557838433, guid: b15e4d0d47601b44885defb10d377c0e, type: 3}
       propertyPath: targetPatient
       value: 
       objectReference: {fileID: 245557163}
@@ -9864,7 +9872,7 @@ MonoBehaviour:
   - {fileID: 878418310}
   isgameover: 0
   isGameClear: 0
-  startingTime: 120
+  startingTime: 1200
 --- !u!4 &1487648665
 Transform:
   m_ObjectHideFlags: 0

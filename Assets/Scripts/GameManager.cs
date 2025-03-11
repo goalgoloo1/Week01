@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI timerText;
 
     [Header("Enemy Manager")]
-    public GameObject[] enemies; // 모든 적 오브젝트
+    public List<GameObject> enemies = new List<GameObject>(); // 모든 적 오브젝트를 List로 변경
     float deleteDistance = 40f; // 비활성화 거리
 
     [Header("Game System")]
@@ -34,12 +35,21 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        foreach (var enemy in enemies)
+        // 적 상태 업데이트
+        for (int i = enemies.Count - 1; i >= 0; i--) // 역방향으로 순회
         {
-            Enemy enemyController = enemy.GetComponent<Enemy>();
-            if (enemyController != null)
+            if (enemies[i] != null) // 적이 파괴되지 않았을 경우
             {
-                enemyController.NavMeshEnemyOnOff(playerTransform, deleteDistance);
+                Enemy enemyController = enemies[i].GetComponent<Enemy>();
+                if (enemyController != null)
+                {
+                    enemyController.NavMeshEnemyOnOff(playerTransform, deleteDistance);
+                }
+            }
+            else
+            {
+                // 적이 파괴된 경우 리스트에서 제거
+                enemies.RemoveAt(i);
             }
         }
 
@@ -60,6 +70,8 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene("ClearMenu");
         }
     }
+
+
     public void Gameover()
     {
         Destroy(player.gameObject);

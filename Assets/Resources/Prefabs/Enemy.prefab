@@ -881,7 +881,6 @@ GameObject:
   - component: {fileID: 2063645250553158777}
   - component: {fileID: 3429885400225720116}
   - component: {fileID: 2226063310483142469}
-  - component: {fileID: 4924296160619138413}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -928,25 +927,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9800c6ff5e48a43bf4e4c369becd3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movespeed: 0
+  player: {fileID: 0}
+  playerPlayer: {fileID: 0}
   hp: 0
+  stunDuration: 0
   bulletPrefab: {fileID: 5029610912062255231, guid: 6eb1591d4b32d2343aa5c90df3766343, type: 3}
-  firePoint: {fileID: 8417749384445346780}
-  fieldOfViewEnemy: {fileID: 4967255531341375547, guid: d9aca60477b04754dac804af3e7f1988, type: 3}
-  fieldOfViewEnemyPrefab: {fileID: 8178410400162374663, guid: d9aca60477b04754dac804af3e7f1988, type: 3}
+  bulletSpeed: 20
+  gunPosition: {fileID: 0}
+  BuleDamagedParticle: {fileID: 0}
+  RedDamagedParticle: {fileID: 0}
+  HealingParticle: {fileID: 0}
+  PressE_UI: {fileID: 0}
+  assassinRange: 1
+  rotationThresholdMin: 130
+  rotationThresholdMax: 180
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  wideFov: 0
+  wideViewDistance: 0
+  longFov: 0
+  longViewDistance: 0
+  fieldOfViewEnemyWide: {fileID: 0}
+  fieldOfViewEnemyLong: {fileID: 0}
+  fieldOfViewEnemyWideColor: {fileID: 0}
+  fieldOfViewEnemyLongColor: {fileID: 0}
+  fieldOfViewEnemyPrefabWide: {fileID: 0}
+  fieldOfViewEnemyPrefabLong: {fileID: 0}
   agent: {fileID: 0}
-  walkPoint: {x: 0, y: 0, z: 0}
-  walkPointRange: 0
-  timeBetweenAttacks: 0
-  sightRange: 0
+  currentState: 0
+  normalLinearSpeed: 0
+  normalAngularSpeed: 0
+  fastLinearSpeed: 0
+  fastAngularSpeed: 0
+  zoneMovePoints: []
+  isWalkingToZoneMovePoint: 0
+  shootingInterval: 1
   attackRange: 0
-  isPlayerInSightRange: 0
-  isPlayerInAttackRange: 0
-  alertDistance: 3
-  cautionDistance: 5
-  fireRate: 3
-  moveTimer: 0
-  deathParticle: {fileID: 5347658223564051670, guid: 122b11e1f441d714f89365a8423ccf9d, type: 3}
+  searchingWalkPointRange: 0
+  searchingTime: 0
 --- !u!50 &2226063310483142469
 Rigidbody2D:
   serializedVersion: 5
@@ -974,28 +993,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!195 &4924296160619138413
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5852853114143785047}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 11
-  m_Acceleration: 12
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 1
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!1 &6599315556844330654
 GameObject:
   m_ObjectHideFlags: 0
