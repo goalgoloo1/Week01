@@ -95,4 +95,14 @@ public class GameManager : MonoBehaviour
         canvas.gameOver.SetActive(true);
     }
 
+    private void OnApplicationFocus(bool focus)
+    {
+        Screen.SetResolution(1920, 1080, true);
+    }
+
+    private void OnApplicationQuit()
+    {
+        Screen.SetResolution(1920, 1080, true);
+    }
+
 }
