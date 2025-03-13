@@ -36,8 +36,8 @@ public class HandGun : Weapon
         GameObject.FindFirstObjectByType<MainCanvas>().ShowMagazin(this);
 
         rateGauge = 0;
-        Instantiate(bullet, transform.position + -transform.parent.parent.up*1, transform.rotation).
-            GetComponent<Bullet>().fireFrom = transform.parent.parent.gameObject;
+        GameObject firedBullet = Instantiate(bullet, transform.position + -transform.parent.parent.up * 1, transform.rotation);
+        firedBullet.GetComponent<Bullet>().firePosition = transform.position;
+        firedBullet.GetComponent<Bullet>().fireFrom = gameObject;
     }
-
 }

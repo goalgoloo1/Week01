@@ -11,7 +11,7 @@ public class Player : CharacterBase
         move = 1 << 1,
         runKeyHolding = 1 << 2,
         running = move | runKeyHolding,
-        saving = 1 << 3,
+        doing = 1 << 3,
         selfhealing = 1 << 4,
         meleeAttack = 1 << 5,
         fire = 1 << 6,
@@ -29,8 +29,15 @@ public class Player : CharacterBase
     private void OnEnable()
 	{
         inputActions = new Dictionary<string, InputAction>();
-		actionAsset.FindActionMap("PlayerActions").Enable();
-		actionMap = actionAsset.FindActionMap("PlayerActions");
+        if (actionAsset.FindActionMap("PlayerActions") != null)
+        {
+            actionAsset.FindActionMap("PlayerActions").Enable();
+        }
+        else 
+        {
+            Debug.Log("playerActions찾을 수 없음");
+        }
+            actionMap = actionAsset.FindActionMap("PlayerActions");
 		foreach (InputAction IA in actionMap.actions) 
 		{
 			if (IA != null)
@@ -39,8 +46,9 @@ public class Player : CharacterBase
 				Debug.Log(IA.name);
 			}
 		}
-
+        rb = GetComponent<Rigidbody2D>();
         FindWeapon();
+        somethings = new List<GameObject>();
     }
     private void OnDisable()
 	{
@@ -50,8 +58,8 @@ public class Player : CharacterBase
 	public float movemultiply = 1;
 	private void Start()
 	{
-		hp = 2;
-		moveSpeed = 10;
+		hp = 99;
+		moveSpeed = 15;
 		maxStamina = 1.5f;
 		curStamina = maxStamina;
 		beforeStamina = curStamina;
@@ -63,8 +71,8 @@ public class Player : CharacterBase
         inputActions["Move"].canceled += _ => removeState(PlayerState.move);
         inputActions["Run"].started += _ => addState(PlayerState.runKeyHolding);
         inputActions["Run"].canceled += _ => removeState(PlayerState.runKeyHolding);
-        inputActions["Save"].started += _ => addState(PlayerState.saving);
-        inputActions["Save"].canceled += _ => removeState(PlayerState.saving);
+        inputActions["Save"].started += _ => addState(PlayerState.doing);
+        inputActions["Save"].canceled += _ => removeState(PlayerState.doing);
         inputActions["Heal"].started += _ => addState(PlayerState.selfhealing);
         inputActions["Heal"].canceled += _ => removeState(PlayerState.selfhealing);
         inputActions["MeleeAttack"].started += _ => MeleeAttackChargeStart();
@@ -77,47 +85,33 @@ public class Player : CharacterBase
 
 	float angle;
     private void Update()
-	{
-		// 플레이어 각도
-		if (!HasState(PlayerState.rolling) && !HasState(PlayerState.meleeAttack)) 
-		{
+    {
+        if (HitStop.waiting) return;
+        // 플레이어 각도
+        if (!HasState(PlayerState.rolling) && !HasState(PlayerState.meleeAttack))
+        {
             Vector3 mousePosition = Input.mousePosition;
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
             Vector2 direction = (mousePosition - transform.position).normalized;
             angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         }
-        if (!HasState(PlayerState.rolling)) 
+        if (!HasState(PlayerState.rolling))
         {
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90));
         }
-        if (something.Count > 0) 
-		{
-            GameObject lastHitObject = something[something.Count - 1];
-            switch (lastHitObject.tag)
-            {
-                case "Weapon":
-                    if (doingGauge > 0.7f)
-                    {
-                        TakeWeapon(lastHitObject);
-                        weapon.transform.GetChild(0).gameObject.SetActive(false);
-                        doingGauge = 0;
-                    }
-                    break;
-                case "AidKit":
-                    break;
-                case "patient":
-                    break;
-            }
-        }
 
-        if (hp == 0) 
+        if (hp == 0)
         {
             Dead();
         }
 
-        if (fill) 
+        if (currentState == PlayerState.doing || currentState == PlayerState.selfhealing)
         {
-            fill.transform.GetChild(0).localScale = new Vector3(1, doingGauge / 0.7f, 1);
+            doingGauge += Time.deltaTime;
+        }
+        else 
+        {
+            doingGauge = 0;
         }
     }
 
@@ -127,7 +121,6 @@ public class Player : CharacterBase
 		if(currentState == PlayerState.idle)
 		{
             curStamina += Time.deltaTime*2;
-			doingGauge = 0;
         }
 		if (currentState == PlayerState.move) 
 		{
@@ -138,7 +131,6 @@ public class Player : CharacterBase
         if (HasState(PlayerState.move))
 		{
             moveDir = inputActions["Move"].ReadValue<Vector2>();
-			doingGauge = 0;
 		}
 		else 
 		{
@@ -154,21 +146,18 @@ public class Player : CharacterBase
 		{
 			fastMoveMultiply = 1;
 		}
-		// 살리기 조건
-		if (currentState == PlayerState.saving)
+		// doing 조건
+		if (currentState == PlayerState.doing)
 		{
-			doingGauge += Time.deltaTime;
 		}
 		// 자힐조건
 		if (currentState == PlayerState.selfhealing)
 		{
-			doingGauge += Time.deltaTime;
 		}
 		// 격발가능조건
 		if (HasState(PlayerState.fire) && weaponScript.fireRate <= weaponScript.rateGauge && weaponScript.remainBullet > 0 && !HasState(PlayerState.rolling))
 		{
 			weaponScript.Fire();
-			doingGauge = 0;
 		}
 		//구르고 있으면 방향 못바구게
         if (HasState(PlayerState.rolling)) 
@@ -264,7 +253,7 @@ public class Player : CharacterBase
                 transform.Find("Idle").gameObject.SetActive(false);
                 transform.Find("Rolling1").gameObject.SetActive(true);
 				fastMoveMultiply = 4f;
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.05f);
             }
             else
             {
@@ -273,7 +262,7 @@ public class Player : CharacterBase
             }
             fastMoveMultiply /= 1.5f;
 			fastMoveMultiply = Mathf.Clamp(fastMoveMultiply, 0, 100);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.08f);
         }
         transform.Find("Rolling5").gameObject.SetActive(false);
         transform.Find("Idle").gameObject.SetActive(true);
@@ -287,12 +276,12 @@ public class Player : CharacterBase
 		return (currentState & checkState) == checkState; // 특정 상태가 있는지 확인 (AND 연산)
 	}
 
-	bool removeState(PlayerState state) 
+	public bool removeState(PlayerState state) 
 	{
 		currentState &= ~state;
 		return false;
 	}
-	bool addState(PlayerState state)
+	public bool addState(PlayerState state)
 	{
 		if (state == PlayerState.rolling)
 		{
@@ -328,27 +317,5 @@ public class Player : CharacterBase
 		return true;
 	}
 
-    GameObject fill;
-    Collider2D c;
-    // 무언가위에 있는지
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-		something.Add(collision.gameObject);
-        c = collision;
-        Transform t = collision.transform.Find("Canvas");
-        if (t) 
-        {
-            t.gameObject.SetActive(true);
-            t = t.Find("PressE");
-            if (t) fill = t.gameObject;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-		something.Remove(collision.gameObject);
-        if (collision == c) 
-        {
-            fill = null;
-        }
-    }
+
 }

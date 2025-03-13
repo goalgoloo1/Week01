@@ -103,23 +103,23 @@ public class Enemy_Soldier : CharacterBase
         float halfFOV = fov / 2; // 시야각 절반
         float baseAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg; // 기준 방향의 각도
 
-        for (float angleOffset = -halfFOV; angleOffset <= halfFOV; angleOffset += 2f) // 2도 간격 발사
-        {
-            float rayAngle = baseAngle + angleOffset; // 최종 방향
+   //     for (float angleOffset = -halfFOV; angleOffset <= halfFOV; angleOffset += 2f) // 2도 간격 발사
+   //     {
+   //         float rayAngle = baseAngle + angleOffset; // 최종 방향
 
-            Vector2 rayDir = new Vector2(Mathf.Cos(rayAngle * Mathf.Deg2Rad), Mathf.Sin(rayAngle * Mathf.Deg2Rad)); // 각도->벡터 변환
-            RaycastHit2D hit = Physics2D.Raycast(origin, rayDir, range, 1 << 3);
-            Debug.DrawRay(origin, rayDir * range, hit.collider ? Color.red : Color.green, 0.1f);
-			if (hit)
-			{
-				Debug.Log("플레이어 찾음");
-				player = hit.collider.gameObject;
-				break;
-			}
-			else 
-			{
-                Debug.Log("플레이어 못찾음");
-            }
-        }
+   //         Vector2 rayDir = new Vector2(Mathf.Cos(rayAngle * Mathf.Deg2Rad), Mathf.Sin(rayAngle * Mathf.Deg2Rad)); // 각도->벡터 변환
+   //         RaycastHit2D hit = Physics2D.Raycast(origin, rayDir, range, 1 << 3);
+   //         Debug.DrawRay(origin, rayDir * range, hit.collider ? Color.red : Color.green, 0.1f);
+			//if (hit)
+			//{
+			//	Debug.Log("플레이어 찾음");
+			//	player = hit.collider.gameObject;
+			//	break;
+			//}
+			//else 
+			//{
+   //             Debug.Log("플레이어 못찾음");
+   //         }
+   //     }
     }
 }

@@ -1,9 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class Bullet : SpawnManager
 {
     Rigidbody2D rb;
-    float bulletSpeed = 300f;
+    float bulletSpeed = 30f;
     public Vector2 direction;
 
     GameObject bulletLine;
@@ -14,6 +15,7 @@ public class Bullet : SpawnManager
     int pointCount = 0;
 
     public GameObject fireFrom;
+    public Vector2 firePosition;
     bool ishit = false;
     float power = 10;
 
@@ -34,7 +36,7 @@ public class Bullet : SpawnManager
     }
     void Update()
     {
-        if (Vector2.Distance(fireFrom.transform.position, transform.position) > 50) 
+        if (Vector2.Distance(firePosition, transform.position) > 50)
         {
             Destroy(gameObject);
         }
@@ -45,15 +47,14 @@ public class Bullet : SpawnManager
         currentPos = transform.position;
 
         RaycastHit2D hit = Physics2D.Raycast(beforePos, (currentPos - beforePos).normalized, Vector2.Distance(beforePos, currentPos));
-        if (hit && hit.collider.tag != fireFrom.tag && !ishit && hit.collider.GetComponent<CharacterBase>()) 
+        if (hit && hit.collider.tag != fireFrom.tag && !ishit && hit.collider.TryGetComponent<CharacterBase>(out CharacterBase hitCharBase))
         {
             ishit = true;
             transform.position = hit.point;
             bulletSpeed = 0;
-            hit.collider.GetComponent<CharacterBase>().takeDamage(direction, power, 1);
+            hitCharBase.takeDamage(direction, power, 1);
             Destroy(gameObject);
         }
-
         pointCount++;
         lineRenderer.positionCount = pointCount;
         lineRenderer.SetPosition(pointCount-1, transform.position);

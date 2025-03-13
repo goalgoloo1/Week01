@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7722025243700261988}
   - component: {fileID: 6495581901944381626}
+  - component: {fileID: 7146006920311800757}
   m_Layer: 0
   m_Name: EmergencyKit
   m_TagString: Emergency Kit
@@ -82,6 +83,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.5198357, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7146006920311800757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451824120428229713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 896fe7697ab3c0f428f15c58d3408cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3270399196279653391
 GameObject:
   m_ObjectHideFlags: 0

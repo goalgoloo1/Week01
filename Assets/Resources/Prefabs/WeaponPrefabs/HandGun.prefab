@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8516937988617317709}
   - component: {fileID: 4757236581480379114}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Triangle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 1638527349741360126}
   - component: {fileID: 5559055640794410844}
   - component: {fileID: 816009801026566496}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 6256367944042333289}
   - component: {fileID: 7848912143513817221}
   - component: {fileID: 3213265708120031949}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +289,7 @@ GameObject:
   - component: {fileID: 7551852728000530008}
   - component: {fileID: 1385459421789199420}
   - component: {fileID: -6038088556144358751}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGun
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -402,7 +402,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4493248051460721841}
   - component: {fileID: 389973490139328728}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5486947841265094050}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGun_OnGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -522,7 +522,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3977122094231433591}
   - component: {fileID: 7431345661617277809}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Triangle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -610,7 +610,7 @@ GameObject:
   - component: {fileID: 4685155568299950739}
   - component: {fileID: 7103383333832325995}
   - component: {fileID: 6146318950931705445}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: E
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -745,7 +745,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5394735140286746328}
   - component: {fileID: 1372029794102509275}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -832,7 +832,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5294572122213920352}
   - component: {fileID: 8061812632946605166}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -920,7 +920,7 @@ GameObject:
   - component: {fileID: 7354724022906693710}
   - component: {fileID: 2867321594911374256}
   - component: {fileID: 7986311976316236065}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: PressE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,7 +996,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7405321440358227840}
   - component: {fileID: 6519167339880999090}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGun_Ingame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1082,7 +1082,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8893610522887638101}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

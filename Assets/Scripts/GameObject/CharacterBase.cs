@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,8 +12,7 @@ public class CharacterBase : GameObjectBase
     protected float fastMoveMultiply;
 
     public float doingGauge;
-    public List<GameObject> something;
-    public bool onSomething = false;
+    public List<GameObject> somethings;
 
     public Weapon weaponScript;
     public GameObject weapon;
@@ -51,13 +51,26 @@ public class CharacterBase : GameObjectBase
 
     public void takeDamage(Vector2 direction, float power, int damage) 
     {
+        if (TryGetComponent<HitStop>(out HitStop hitstop))
+        {
+            Debug.Log("히트스탑");
+            hitstop.Stop(0f);
+        }
+        StartCoroutine(WaitForSpawn(direction, power, damage));
+
+    }
+    IEnumerator WaitForSpawn(Vector2 direction, float power, int damage)
+    {
+        while (Time.timeScale != 1f)
+        {
+            yield return null;
+        }
         Instantiate(deadParticle, transform.position, transform.rotation);
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb) rb.AddForce(direction.normalized * power, ForceMode2D.Impulse);
         hp -= damage;
         stunTime += damage;
     }
-
     protected void Dead()
     {
         Instantiate(deadParticle, transform.position, transform.rotation);
@@ -84,7 +97,7 @@ public class CharacterBase : GameObjectBase
         }
     }
 
-    protected void TakeWeapon(GameObject dropedWeapon) 
+    public void TakeWeapon(GameObject dropedWeapon) 
     {
         dropedWeapon.transform.SetParent(transform.Find("Hand"));
         dropedWeapon.GetComponent<Weapon>().onHandIMG.SetActive(true);

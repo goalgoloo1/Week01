@@ -137,6 +137,11 @@ public class SpawnManager : MonoBehaviour
             GameObject newArrow = Instantiate(arrowPrefab, target.transform);
             // 화살표 이름
             newArrow.name = target.tag + "arrow";
+            if (player) 
+            {
+                newArrow.GetComponent<ArrowDirection>().player = player;
+            }
+            
         }
         // 화면 안쪽이고 자식에 화살표가 있으면
         else if ((targetpos.x > 0 && targetpos.x < 1 && targetpos.y > 0 && targetpos.y < 1) && arrow)
